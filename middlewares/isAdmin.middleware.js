@@ -1,5 +1,7 @@
 const AsyncHandler = require("express-async-handler");
 const User = require("../models/user.model");
+const ForbiddenRequestError = require("../exceptions/forbidden.exception");
+const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const isAdmin = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
@@ -8,14 +10,12 @@ const isAdmin = AsyncHandler(async (req, res, next) => {
       if (user.isAdmin) {
         next();
       } else {
-        res.status(401);
-        throw new Error(
+        throw new UnauthorizedRequestError(
           "Authenticated user not authorized to access this route"
         );
       }
     } else {
-      res.status(403);
-      throw new Error("User not found");
+      throw new ForbiddenRequestError("User not found");
     }
   } catch (error) {
     next(error);

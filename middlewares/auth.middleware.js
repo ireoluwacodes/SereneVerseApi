@@ -1,5 +1,7 @@
 const AsyncHandler = require("express-async-handler");
 const { verifyToken } = require("../utils/token.utils");
+const ForbiddenRequestError = require("../exceptions/forbidden.exception");
+const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { JsonWebTokenError } = require("jsonwebtoken");
 
 const authMiddleware = AsyncHandler(async (req, res, next) => {
@@ -7,7 +9,7 @@ const authMiddleware = AsyncHandler(async (req, res, next) => {
     const [scheme, token] = req.headers.authorization.split(" ");
     if (scheme == "Bearer") {
       if (!token || token == "") {
-        throw new Error(
+        throw new UnauthorizedRequestError(
           "Invalid token, pass token as a Bearer in authorization headers"
         );
       } else {
@@ -20,7 +22,7 @@ const authMiddleware = AsyncHandler(async (req, res, next) => {
         }
       }
     } else {
-      throw new Error(
+      throw new ForbiddenRequestError(
         "Invalid token, pass token as a Bearer in authorization headers"
       );
     }

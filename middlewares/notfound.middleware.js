@@ -1,9 +1,8 @@
 const AsyncHandler = require("express-async-handler");
-
+const ResourceNotFoundError = require("../exceptions/notFound.exception")
 const notFound = AsyncHandler(async (req, res, next) => {
   try {
-    res.status(404);
-    throw new Error(`Route not found : ${req.originalUrl}`);
+    throw new ResourceNotFoundError(`Route not found : ${req.originalUrl}`);
   } catch (error) {
     next(error);
   }
