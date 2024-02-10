@@ -1,6 +1,6 @@
 const status = require("http-status");
 
-module.exports = class BadRequestError extends Error {
+ class BadRequestError extends Error {
   statusCode = status.BAD_REQUEST;
   name = "BAD_REQUEST_ERROR";
 
@@ -8,3 +8,5 @@ module.exports = class BadRequestError extends Error {
     super(message || "Bad Request");
   }
 };
+
+module.exports = BadRequestError

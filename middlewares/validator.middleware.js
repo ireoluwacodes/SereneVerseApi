@@ -1,4 +1,5 @@
-const Joi = require("joi")
+const Joi = require("joi");
+const BadRequestError = require("../exceptions/badRequest.exception");
 
 const validator = (schema)=>async (req, res, next)=>{
     try {
@@ -6,8 +7,7 @@ const validator = (schema)=>async (req, res, next)=>{
         const value = await schema.validateAsync(body);
         next();
       } catch (error) {
-        res.status(400)
-        next(error)
+       throw new BadRequestError(error)
       }
 }
 
