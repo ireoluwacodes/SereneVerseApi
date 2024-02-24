@@ -6,6 +6,8 @@ const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { User } = require("../models/user.model");
 const { hashPassword, comparePassword } = require("../utils/hashing.utils");
 const { signToken, signRefreshToken } = require("../utils/token.utils");
+const { sendMail } = require("../utils/mailer.utils");
+const { generateOtp } = require("../utils/generateOtp");
 
 // controller to register a user
 const register = AsyncHandler(async (req, res, next) => {
@@ -100,6 +102,14 @@ const login = AsyncHandler(async (req, res, next) => {
 const forgotPassword = AsyncHandler(async (req, res, next) => {
   try {
     const { email } = req.body;
+    // Generate OTP (One-Time Password)
+    let info;
+    let otp = generateOtp();
+    let subject = "Password Reset";
+    let template = "forgotPassword";
+
+    // Send the email with the generated OTP
+    info = await sendMail(email, subject, template, otp);
   } catch (error) {
     next(error);
   }

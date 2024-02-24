@@ -1,16 +1,19 @@
-import nodemailer from "nodemailer";
-import hbs from "nodemailer-express-handlebars";
-import { mailHost, mailPass, mailUser } from "./constants.config";
-import { hbsOptions } from "../hbs";
+import { mailUser, transporter } from "../config";
 
-export const transporter = nodemailer.createTransport({
-  host: mailHost,
-  port: 465,
-  secure: true,
-  auth: {
-    user: mailUser,
-    pass: mailPass,
-  },
-});
-
-transporter.use("compile", hbs(hbsOptions));
+export const sendMail = async (email, subject, template, otp) => {
+  try {
+    let mailOption = {
+      from: mailUser,
+      to: email,
+      subject,
+      template,
+      context: {
+        otp,
+      },
+    };
+    let info = await transporter.sendMail(mailOption);
+    return info;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
