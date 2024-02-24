@@ -1,9 +1,9 @@
-import nodemailer from "nodemailer";
-import hbs from "nodemailer-express-handlebars";
-import { mailHost, mailPass, mailUser } from "./constants.config";
-import { hbsOptions } from "../hbs";
+const nodemailer = require("nodemailer");
+const hbs = require("nodemailer-express-handlebars");
+const { mailHost, mailPass, mailUser } = require("./constants.config");
+const { hbsOptions } = require("../hbs");
 
-export const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   host: mailHost,
   port: 465,
   secure: true,
@@ -14,3 +14,7 @@ export const transporter = nodemailer.createTransport({
 });
 
 transporter.use("compile", hbs(hbsOptions));
+
+module.exports = {
+  transporter,
+};

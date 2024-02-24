@@ -1,6 +1,6 @@
-import path from "path";
+const path = require("path");
 
-export const hbsOptions = {
+const hbsOptions = {
   viewEngine: {
     extname: ".hbs",
     partialsDir: path.join(__dirname, "views"),
@@ -8,4 +8,8 @@ export const hbsOptions = {
   },
   viewPath: path.join(__dirname, "views"),
   extName: ".hbs",
+};
+
+module.exports = {
+  hbsOptions,
 };

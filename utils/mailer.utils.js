@@ -1,6 +1,6 @@
-import { mailUser, transporter } from "../config";
+const { mailUser, transporter } = require("../config/constants.config");
 
-export const sendMail = async (email, subject, template, otp) => {
+const sendMail = async (email, subject, template, otp) => {
   try {
     let mailOption = {
       from: mailUser,
@@ -16,4 +16,8 @@ export const sendMail = async (email, subject, template, otp) => {
   } catch (error) {
     throw new Error(error);
   }
+};
+
+module.exports = {
+  sendMail,
 };
