@@ -1,8 +1,9 @@
 const Joi = require("joi");
 
-module.exports.createUserSchema = Joi.object({
+const createUserSchema = Joi.object({
   fullName: Joi.string().required(),
   password: Joi.string().required(),
+  role: Joi.string().required(),
   email: Joi.string()
     .required()
     .email({
@@ -12,3 +13,7 @@ module.exports.createUserSchema = Joi.object({
   dateOfBirth: Joi.date().required(),
   phone: Joi.string().required().min(11).max(14),
 });
+
+module.exports = {
+  createUserSchema,
+};

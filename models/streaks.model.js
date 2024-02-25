@@ -1,0 +1,6 @@
+
+id
+userId
+currentStreak
+pastStreak
+currentStreakStarted

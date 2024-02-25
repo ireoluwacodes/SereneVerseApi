@@ -1,7 +1,7 @@
 const { secret } = require("../config/constants.config");
 const jwt = require("jsonwebtoken");
 
-const signToken = (id) => {
+const signToken = async (id) => {
   try {
     let payload = {
       id,
@@ -15,7 +15,7 @@ const signToken = (id) => {
   }
 };
 
-const verifyToken =  (token) => {
+const verifyToken = async (token) => {
   try {
     let payload = jwt.verify(token, secret);
     return payload.id;
@@ -24,7 +24,7 @@ const verifyToken =  (token) => {
   }
 };
 
-const signRefreshToken =  (id) => {
+const signRefreshToken = async (id) => {
   try {
     let payload = {
       id,

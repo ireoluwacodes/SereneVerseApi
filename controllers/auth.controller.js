@@ -14,7 +14,7 @@ const register = AsyncHandler(async (req, res, next) => {
   // wrap all logic in a try-catch block for error handling
   try {
     // destructure the values needed from the request body
-    const { fullName, password, phone, email, dateOfBirth } = req.body;
+    const { fullName, password, phone, email, dateOfBirth, role } = req.body;
 
     // checks if any of the users essentials exist in the db
     const findUser = await User.findOne({ email });
@@ -33,6 +33,7 @@ const register = AsyncHandler(async (req, res, next) => {
       hash,
       phone,
       email,
+      role,
       dateOfBirth,
     };
     // save the user details as a new entry in the db
@@ -67,8 +68,8 @@ const login = AsyncHandler(async (req, res, next) => {
       throw new UnauthorizedRequestError("Incorrect Password");
     }
     // sign access and refresh token to keep a user logged in
-    const accessToken = signToken(findUser._id);
-    const refreshToken = signRefreshToken(findUser._id);
+    const accessToken = await signToken(findUser._id);
+    const refreshToken = await signRefreshToken(findUser._id);
 
     // store refresh token on the users browser and in the db
     res.cookie("refresh_token", refreshToken, {
@@ -82,7 +83,7 @@ const login = AsyncHandler(async (req, res, next) => {
     await findUser.save();
 
     const user = {
-      ...findUser,
+      ...findUser._doc,
       refreshToken: undefined,
       hash: undefined,
       password,
@@ -135,17 +136,17 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
     // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
-    const { refreshToken } = req.cookies;
+    const { refresh_token } = req.cookies;
 
     //fetch userId attached to request object from authMiddleware
     const userId = req.userId;
 
     const user = await User.findById(userId);
-
-    if (!user || user.refreshToken != refreshToken)
+    console.log(user);
+    if (!user || !refresh_token || user.refreshToken !== refresh_token)
       throw new ForbiddenRequestError("User not Found - invalid refresh token");
     // after validating logged in user, pass a new access token
-    const accessToken = signToken(user._id);
+    const accessToken = await signToken(user._id);
 
     return res.status(status.OK).json({
       status: "success",
@@ -160,13 +161,13 @@ const refresh = AsyncHandler(async (req, res, next) => {
 // controller to log out a user session
 const logOut = AsyncHandler(async (req, res, next) => {
   try {
-    const { refreshToken } = req.cookies;
+    const { refresh_token } = req.cookies;
 
     const userId = req.userId;
 
     const user = await User.findById(userId);
 
-    if (!user || !refreshToken || user.refreshToken != refreshToken) {
+    if (!user || !refresh_token || user.refreshToken != refresh_token) {
       // clears cookie from user browser and logs user out
       res.clearCookie("refresh_token", {
         httpOnly: true,

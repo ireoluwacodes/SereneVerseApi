@@ -7,7 +7,7 @@ const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const errHandler = (error, req, res, next) => {
   let statuscode = res.statusCode == 200 ? 500 : res.statusCode;
   let message = "A server error occurred";
-  let type = "Unknown server Error";
+  let type = "Server Error";
   if (error instanceof Error) {
     message = error.message;
   }
@@ -25,7 +25,7 @@ const errHandler = (error, req, res, next) => {
     message = error.message;
     type = error.name;
   }
-  res.status(statuscode).json({
+  return res.status(statuscode).json({
     status: "fail",
     type,
     message,
