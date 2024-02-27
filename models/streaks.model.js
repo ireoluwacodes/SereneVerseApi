@@ -1,6 +1,28 @@
+const mongoose = require("mongoose");
 
-id
-userId
-currentStreak
-pastStreak
-currentStreakStarted
+// Declare the Schema of the Mongo model
+const streakSchema = new mongoose.Schema({
+  userId: {
+    type: Types.ObjectId,
+    ref: "User",
+  },
+  name: {
+    type: String,
+  },
+  currentStreak: {
+    type: String,
+  },
+  pastStreak: {
+    type: String,
+  },
+  currentStreakStarted: {
+    type: String,
+  },
+});
+
+//Export the model
+const Streak = mongoose.model("Streak", streakSchema);
+
+module.exports = {
+  Streak,
+};
