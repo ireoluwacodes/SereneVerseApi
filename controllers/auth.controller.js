@@ -58,7 +58,7 @@ const login = AsyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const findUser = await User.findOne({ email });
+    const findUser = await User.findOne({ email }).lean();
     if (!findUser) {
       throw new UnauthorizedRequestError("User not Found");
     }
