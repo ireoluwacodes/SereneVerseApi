@@ -1,6 +1,6 @@
 const { mailUser, transporter } = require("../config/constants.config");
 
-const sendMail = async (email, subject, template, otp) => {
+const sendMail = async (email, subject, template, otp, fullName) => {
   try {
     let mailOption = {
       from: mailUser,
@@ -9,6 +9,7 @@ const sendMail = async (email, subject, template, otp) => {
       template,
       context: {
         otp,
+        fullName
       },
     };
     let info = await transporter.sendMail(mailOption);

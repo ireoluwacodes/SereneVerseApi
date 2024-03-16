@@ -103,14 +103,35 @@ const login = AsyncHandler(async (req, res, next) => {
 const forgotPassword = AsyncHandler(async (req, res, next) => {
   try {
     const { email } = req.body;
+
+    //check whether the user exists in the db and returns error otherwise
+    const user = await User.findOne({ email }).lean();
+    if (!user) throw new ForbiddenRequestError("User not Found");
+
     // Generate OTP (One-Time Password)
     let info;
     let otp = generateOtp();
     let subject = "Password Reset";
     let template = "forgotPassword";
+    let name = user.fullName;
 
     // Send the email with the generated OTP
-    info = await sendMail(email, subject, template, otp);
+    info = await sendMail(email, subject, template, otp, fullName);
+
+    // save the otp. time created and expiry date to the db
+    const currentTime = Date.now();
+    user.otp = otp;
+    user.otpCreatedAt = currentTime;
+    user.otpExpiresIn = currentTime + 10 * 60 * 1000;
+    await user.save();
+
+    if (info)
+      return res.status(status.OK).json({
+        status: "success",
+        statusCode: status.OK,
+        message: "Successfully Sent",
+        response: info.response,
+      });
   } catch (error) {
     next(error);
   }
@@ -118,7 +139,7 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
 
 const resetPassword = AsyncHandler(async (req, res, next) => {
   try {
-    const { password } = req.body;
+    const { email, password } = req.body;
   } catch (error) {
     next(error);
   }
