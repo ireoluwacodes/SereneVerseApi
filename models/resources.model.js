@@ -18,6 +18,10 @@ const resourceSchema = new Schema(
       required: true,
       enum: ["video", "article"],
     },
+    postedBy: {
+      type: Types.ObjectId,
+      ref: "user",
+    },
   },
   {
     timestamps: true,
