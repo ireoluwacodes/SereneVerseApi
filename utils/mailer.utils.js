@@ -1,4 +1,5 @@
-const { mailUser, transporter } = require("../config/constants.config");
+const { mailUser } = require("../config/constants.config");
+const { transporter } = require("../config/mail.config");
 
 const sendMail = async (email, subject, template, otp, fullName) => {
   try {

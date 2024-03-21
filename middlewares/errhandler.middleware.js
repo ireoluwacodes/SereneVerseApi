@@ -29,7 +29,7 @@ const errHandler = (error, req, res, next) => {
     status: "fail",
     type,
     message,
-    // stack: err?.stack,
+    // stack: error?.stack,
   });
 };
 
