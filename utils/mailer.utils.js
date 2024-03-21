@@ -13,7 +13,7 @@ const sendMail = async (email, subject, template, otp, fullName) => {
       },
     };
     let info = await transporter.sendMail(mailOption);
-    return info;
+    return info.response;
   } catch (error) {
     throw new Error(error);
   }

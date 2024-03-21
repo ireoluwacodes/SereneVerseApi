@@ -109,14 +109,14 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
     if (!user) throw new ForbiddenRequestError("User not Found");
 
     // Generate OTP (One-Time Password)
-    let info;
+    let response;
     let otp = generateOtp();
     let subject = "Password Reset";
     let template = "forgotPassword";
     let name = user.fullName;
 
     // Send the email with the generated OTP
-    info = await sendMail(email, subject, template, otp, fullName);
+    response = await sendMail(email, subject, template, otp, name);
 
     // save the otp. time created and expiry date to the db
     const currentTime = Date.now();
@@ -130,16 +130,37 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
         status: "success",
         statusCode: status.OK,
         message: "Successfully Sent",
-        response: info.response,
+        response,
       });
   } catch (error) {
     next(error);
   }
 });
 
+// controller that resets a users password only after the otp has been confirmed
 const resetPassword = AsyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const hash = await hashPassword(password);
+
+    // find the user in the db and update password hash in one query
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        hash,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!user) throw new ForbiddenRequestError("User not Found");
+
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      message: "Successfully Reset",
+    });
   } catch (error) {
     next(error);
   }
@@ -148,6 +169,21 @@ const resetPassword = AsyncHandler(async (req, res, next) => {
 const confirmOtp = AsyncHandler(async (req, res, next) => {
   try {
     const { email, otp } = req.body;
+
+    // find user with given email in the db and validate otp
+    const user = await User.findOne({ email }).lean();
+    const userOtp = user.otp;
+    // returns true if otp has not expired
+    const validOtp = user.otpCreatedAt >= user.otpExpiresIn ? false : true;
+
+    if (!userOtp && !(otp == userOtp) && !validOtp)
+      throw new UnauthorizedRequestError("invalid or expired otp");
+
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      message: "Valid Otp",
+    });
   } catch (error) {
     next(error);
   }
