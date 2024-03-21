@@ -6,6 +6,11 @@ const streakSchema = new mongoose.Schema({
     type: Types.ObjectId,
     ref: "User",
   },
+  status: {
+    type: String,
+    default: "active",
+    enum: ["active", "inactive"],
+  },
   name: {
     type: String,
   },
