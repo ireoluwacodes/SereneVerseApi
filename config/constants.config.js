@@ -6,8 +6,8 @@ const webMUrl = process.env.MONGO_URL;
 const secret = process.env.JWT_KEY;
 const nodeEnv = process.env.NODE_ENV;
 const mailHost = process.env.MAIL_HOST;
-const mailPass = process.env.USER;
-const mailUser = process.env.PASS;
+const mailPass = process.env.PASS;
+const mailUser = process.env.USER;
 
 module.exports = {
   PORT,

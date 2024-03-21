@@ -58,7 +58,7 @@ const login = AsyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const findUser = await User.findOne({ email }).lean();
+    const findUser = await User.findOne({ email });
     if (!findUser) {
       throw new UnauthorizedRequestError("User not Found");
     }
@@ -105,7 +105,8 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
     const { email } = req.body;
 
     //check whether the user exists in the db and returns error otherwise
-    const user = await User.findOne({ email }).lean();
+    const user = await User.findOne({ email });
+    console.log(user)
     if (!user) throw new ForbiddenRequestError("User not Found");
 
     // Generate OTP (One-Time Password)
@@ -125,7 +126,7 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
     user.otpExpiresIn = currentTime + 10 * 60 * 1000;
     await user.save();
 
-    if (info)
+    if (response)
       return res.status(status.OK).json({
         status: "success",
         statusCode: status.OK,
@@ -142,7 +143,7 @@ const resetPassword = AsyncHandler(async (req, res, next) => {
   try {
     // destructure the userid passed from the middleware
     const { userId } = req;
-
+    
     // destructure and hash the password
     const { password } = req.body;
     const hash = await hashPassword(password);
@@ -175,12 +176,12 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
     const { email, otp } = req.body;
 
     // find user with given email in the db and validate otp
-    const user = await User.findOne({ email }).lean();
+    const user = await User.findOne({ email });
     const userOtp = user.otp;
     // returns true if otp has not expired
-    const validOtp = user.otpCreatedAt >= user.otpExpiresIn ? false : true;
+    const validOtp = Date.now() >= user.otpExpiresIn ? false : true;
 
-    if (!userOtp && !(otp == userOtp) && !validOtp)
+    if (!userOtp || !(otp == userOtp) || !validOtp)
       throw new UnauthorizedRequestError("invalid or expired otp");
 
     const accessToken = await signToken(user._id);
