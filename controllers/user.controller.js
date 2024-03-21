@@ -63,7 +63,21 @@ const updatePassword = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const getExpertContact = AsyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req;
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 module.exports = {
   getAllUsers,
   updatePassword,
+  getExpertContact
 };
