@@ -140,12 +140,16 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
 // controller that resets a users password only after the otp has been confirmed
 const resetPassword = AsyncHandler(async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    // destructure the userid passed from the middleware
+    const { userId } = req;
+
+    // destructure and hash the password
+    const { password } = req.body;
     const hash = await hashPassword(password);
 
     // find the user in the db and update password hash in one query
-    const user = await User.findOneAndUpdate(
-      { email },
+    const user = await User.findByIdAndUpdate(
+      userId,
       {
         hash,
       },
@@ -179,10 +183,13 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
     if (!userOtp && !(otp == userOtp) && !validOtp)
       throw new UnauthorizedRequestError("invalid or expired otp");
 
+    const accessToken = await signToken(user._id);
+
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       message: "Valid Otp",
+      token: accessToken,
     });
   } catch (error) {
     next(error);
