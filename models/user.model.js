@@ -28,12 +28,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role : {
+    role: {
       type: String,
       required: true,
+      enum: ["admin", "user", "consultant"],
     },
-    refreshToken : {
-      type : String
+    refreshToken: {
+      type: String,
     },
     otp: {
       type: Number,
@@ -54,5 +55,5 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 module.exports = {
-  User
-}
+  User,
+};

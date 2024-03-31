@@ -7,7 +7,7 @@ const isAdmin = AsyncHandler(async (req, res, next) => {
     const id = req.userId;
     const user = await User.findById(id);
     if (user) {
-      if (user.isAdmin) {
+      if (user.isAdmin && user.role === "admin") {
         next();
       } else {
         throw new UnauthorizedRequestError(

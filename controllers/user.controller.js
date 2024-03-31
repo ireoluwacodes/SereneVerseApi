@@ -66,18 +66,21 @@ const updatePassword = AsyncHandler(async (req, res, next) => {
 const getExpertContact = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
+    const expertArr = await User.find({ role: "consultant" });
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
+      data: {
+        expertArr,
+      },
     });
   } catch (error) {
     next(error);
   }
 });
 
-
 module.exports = {
   getAllUsers,
   updatePassword,
-  getExpertContact
+  getExpertContact,
 };
