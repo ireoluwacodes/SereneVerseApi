@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-
 // Declare the Schema of the Mongo model
 const streakSchema = new mongoose.Schema({
   userId: {
-    type: Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "User",
   },
   status: {
