@@ -15,13 +15,13 @@ const streakSchema = new mongoose.Schema({
     type: String,
   },
   currentStreak: {
-    type: String,
+    type: Number,
   },
   pastStreak: {
-    type: String,
+    type: Number,
   },
   currentStreakStarted: {
-    type: String,
+    type: Date,
   },
 });
 

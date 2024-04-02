@@ -8,11 +8,14 @@ const {
   restartExistingStreak,
   getUserStreaks,
   getActiveStreak,
+  myStreak,
 } = require("../controllers/streak.controller");
 
 const streakRouter = Router();
 
 streakRouter.route("/start").post(authMiddleware, startNewStreak);
+
+streakRouter.route("/yay/:id").post(authMiddleware, myStreak);
 
 streakRouter.route("/end/:id").get(authMiddleware, endCurrentStreak);
 
