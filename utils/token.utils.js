@@ -7,7 +7,7 @@ const signToken = async (id) => {
       id,
     };
     let token = jwt.sign(payload, secret, {
-      expiresIn: "5h",
+      expiresIn: "30m",
     });
     return token;
   } catch (error) {
