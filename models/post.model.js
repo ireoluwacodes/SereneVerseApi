@@ -17,8 +17,7 @@ const postSchema = new Schema(
     },
     comments: [
       {
-        type: String,
-        required: true,
+        comment : String,
         madeBy: {
           type: Types.ObjectId,
           ref: "user",

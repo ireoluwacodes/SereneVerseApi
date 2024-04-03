@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 // Declare the Schema of the Mongo model
-const streakSchema = new mongoose.Schema({
+const streakSchema = new Schema({
   userId: {
-    type: mongoose.Types.ObjectId,
+    type: Types.ObjectId,
     ref: "User",
   },
   status: {
@@ -25,7 +25,7 @@ const streakSchema = new mongoose.Schema({
 });
 
 //Export the model
-const Streak = mongoose.model("Streak", streakSchema);
+const Streak = model("Streak", streakSchema);
 
 module.exports = {
   Streak,

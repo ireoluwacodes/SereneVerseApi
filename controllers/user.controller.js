@@ -3,6 +3,7 @@ const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { hashPassword, comparePassword } = require("../utils/hashing.utils");
+const { validateDbId } = require("../utils/validateMongoId");
 const { User } = require("../models/user.model");
 
 // controller to retrieve all users(admin)
@@ -32,6 +33,8 @@ const getAllUsers = AsyncHandler(async (req, res, next) => {
 const updatePassword = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
+    await validateDbId(id)
+    
     // destructure values from request body
     const { newPass, currPass } = req.body;
 

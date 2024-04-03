@@ -2,12 +2,14 @@ const AsyncHandler = require("express-async-handler");
 const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
+const { validateDbId } = require("../utils/validateMongoId");
 const { Streak } = require("../models/streaks.model");
 
 module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     const { name } = req.body;
+    await validateDbId(userId)
 
     const streak = await Streak.create({ userId, name });
 
@@ -27,6 +29,7 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     const { id } = req.params;
+    await validateDbId(userId, id)
 
     const streak = await Streak.findById(id);
     streak.currentStreak = streak.currentStreak + 1;
@@ -45,8 +48,8 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
 
 module.exports.endCurrentStreak = AsyncHandler(async (req, res, next) => {
   try {
-    const { userId } = req;
     const { id } = req.params;
+    await validateDbId(id)
 
     const streak = await Streak.findByIdAndUpdate(
       id,
@@ -68,8 +71,8 @@ module.exports.endCurrentStreak = AsyncHandler(async (req, res, next) => {
 
 module.exports.restartExistingStreak = AsyncHandler(async (req, res, next) => {
   try {
-    const { userId } = req;
     const { id } = req.params;
+    await validateDbId(id)
 
     const streak = await Streak.findByIdAndUpdate(
       id,
@@ -89,6 +92,7 @@ module.exports.restartExistingStreak = AsyncHandler(async (req, res, next) => {
 module.exports.getUserStreaks = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
+    await validateDbId(userId)
 
     const streaks = await Streak.find({ userId });
 
@@ -107,6 +111,7 @@ module.exports.getUserStreaks = AsyncHandler(async (req, res, next) => {
 module.exports.getActiveStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
+    await validateDbId(userId)
 
     const activeStreaks = await Streak.find({ userId, status: "active" });
 

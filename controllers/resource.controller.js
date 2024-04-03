@@ -2,11 +2,13 @@ const AsyncHandler = require("express-async-handler");
 const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
+const { validateDbId } = require("../utils/validateMongoId");
 const { Resource } = require("../models/resources.model");
 
 module.exports.addNewResource = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
+    await validateDbId(userId);
     const { datePosted, type, content } = req.body;
 
     const resource = await Resource.create({
@@ -29,7 +31,6 @@ module.exports.addNewResource = AsyncHandler(async (req, res, next) => {
 
 module.exports.getVideoResources = AsyncHandler(async (req, res, next) => {
   try {
-    const { userId } = req;
     const videoResource = await Resource.find({ type: "video" });
 
     return res.status(status.OK).json({
@@ -46,7 +47,6 @@ module.exports.getVideoResources = AsyncHandler(async (req, res, next) => {
 
 module.exports.getArticleResources = AsyncHandler(async (req, res, next) => {
   try {
-    const { userId } = req;
     const articleResource = await Resource.find({ type: "article" });
 
     return res.status(status.OK).json({
@@ -63,8 +63,9 @@ module.exports.getArticleResources = AsyncHandler(async (req, res, next) => {
 
 module.exports.deleteResource = AsyncHandler(async (req, res, next) => {
   try {
-    const { userId } = req;
     const { id } = req.params;
+    await validateDbId(id);
+
     await Resource.findByIdAndDelete(id);
     return res.status(status.OK).json({
       status: "success",
@@ -77,9 +78,10 @@ module.exports.deleteResource = AsyncHandler(async (req, res, next) => {
 
 module.exports.updateResource = AsyncHandler(async (req, res, next) => {
   try {
-    const { userId } = req;
     const { content } = req.body;
     const { id } = req.params;
+    await validateDbId(id);
+
     const resource = await Resource.findByIdAndUpdate(
       id,
       { content },
@@ -88,6 +90,9 @@ module.exports.updateResource = AsyncHandler(async (req, res, next) => {
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
+      data: {
+        resource,
+      },
     });
   } catch (error) {
     next(error);
