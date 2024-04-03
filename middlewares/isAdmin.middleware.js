@@ -1,5 +1,5 @@
 const AsyncHandler = require("express-async-handler");
-const User = require("../models/user.model");
+const { User } = require("../models/user.model");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const isAdmin = AsyncHandler(async (req, res, next) => {

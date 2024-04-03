@@ -15,8 +15,12 @@ const getAllUsers = AsyncHandler(async (req, res, next) => {
     // removes sensitive/unnecessary fields from each user
     const sanitizedUsers = users.map((user) => {
       user.hash = undefined;
-      user._v = undefined;
+      user.__v = undefined;
+      user.otp = undefined;
+      user.otpCreatedAt = undefined;
+      user.otpExpiresIn = undefined;
       user.refreshToken = undefined;
+      return user;
     });
 
     return res.status(status.OK).json({
@@ -33,8 +37,8 @@ const getAllUsers = AsyncHandler(async (req, res, next) => {
 const updatePassword = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
-    await validateDbId(id)
-    
+    await validateDbId(id);
+
     // destructure values from request body
     const { newPass, currPass } = req.body;
 
@@ -50,10 +54,13 @@ const updatePassword = AsyncHandler(async (req, res, next) => {
     await user.save();
 
     const sanitizedUser = {
-      ...user,
+      ...user._doc,
       hash: undefined,
       password: newPass,
-      _v: undefined,
+      __v: undefined,
+      otp: undefined,
+      otpCreatedAt: undefined,
+      otpExpiresIn: undefined,
       refreshToken: undefined,
     };
     return res.status(status.CREATED).json({

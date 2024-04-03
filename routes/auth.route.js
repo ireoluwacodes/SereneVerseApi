@@ -24,7 +24,7 @@ authRouter.route("/login").post(validator(loginSchema), login);
 
 authRouter.route("/password/forgot").post(validator(checkEmailSchema), forgotPassword);
 
-authRouter.route("/refresh").get(authMiddleware, refresh);
+authRouter.route("/refresh").get(refresh);
 
 authRouter.route("/password/reset").patch(validator(checkPassSchema), authMiddleware, resetPassword);
 

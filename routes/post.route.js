@@ -20,9 +20,9 @@ postRouter.route("/comment/:id").post(authMiddleware, createComment);
 
 postRouter.route("/comment/:id").delete(authMiddleware, deleteComment);
 
-postRouter.route("/delete").delete(authMiddleware, isAdmin, deleteDailyPost);
+postRouter.route("/delete/:id").delete(authMiddleware, isAdmin, deleteDailyPost);
 
-postRouter.route("/update").patch(authMiddleware, isAdmin, updateDailyPost);
+postRouter.route("/update/:id").patch(authMiddleware, isAdmin, updateDailyPost);
 
 postRouter.route("/all").get(authMiddleware, isAdmin, getAllDailyPost);
 

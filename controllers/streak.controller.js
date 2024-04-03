@@ -9,9 +9,13 @@ module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     const { name } = req.body;
-    await validateDbId(userId)
+    await validateDbId(userId);
 
-    const streak = await Streak.create({ userId, name });
+    const streak = await Streak.create({
+      userId,
+      name,
+      currentStreakStarted: new Date(Date.now()),
+    });
 
     return res.status(status.OK).json({
       status: "success",
@@ -29,7 +33,7 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     const { id } = req.params;
-    await validateDbId(userId, id)
+    await validateDbId(userId, id);
 
     const streak = await Streak.findById(id);
     streak.currentStreak = streak.currentStreak + 1;
@@ -49,13 +53,13 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
 module.exports.endCurrentStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { id } = req.params;
-    await validateDbId(id)
+    await validateDbId(id);
 
-    const streak = await Streak.findByIdAndUpdate(
-      id,
-      { status: "inactive" },
-      { new: true }
-    );
+    const streak = await Streak.findById(id);
+    streak.status = "inactive";
+    streak.pastStreak = streak.currentStreak;
+    streak.currentStreak = 0;
+    await streak.save();
 
     return res.status(status.OK).json({
       status: "success",
@@ -72,7 +76,7 @@ module.exports.endCurrentStreak = AsyncHandler(async (req, res, next) => {
 module.exports.restartExistingStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { id } = req.params;
-    await validateDbId(id)
+    await validateDbId(id);
 
     const streak = await Streak.findByIdAndUpdate(
       id,
@@ -92,7 +96,7 @@ module.exports.restartExistingStreak = AsyncHandler(async (req, res, next) => {
 module.exports.getUserStreaks = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
-    await validateDbId(userId)
+    await validateDbId(userId);
 
     const streaks = await Streak.find({ userId });
 
@@ -111,7 +115,7 @@ module.exports.getUserStreaks = AsyncHandler(async (req, res, next) => {
 module.exports.getActiveStreak = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
-    await validateDbId(userId)
+    await validateDbId(userId);
 
     const activeStreaks = await Streak.find({ userId, status: "active" });
 

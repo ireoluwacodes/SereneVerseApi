@@ -106,7 +106,7 @@ const forgotPassword = AsyncHandler(async (req, res, next) => {
 
     //check whether the user exists in the db and returns error otherwise
     const user = await User.findOne({ email });
-    console.log(user)
+    console.log(user);
     if (!user) throw new ForbiddenRequestError("User not Found");
 
     // Generate OTP (One-Time Password)
@@ -143,7 +143,7 @@ const resetPassword = AsyncHandler(async (req, res, next) => {
   try {
     // destructure the userid passed from the middleware
     const { userId } = req;
-    
+
     // destructure and hash the password
     const { password } = req.body;
     const hash = await hashPassword(password);
@@ -204,10 +204,9 @@ const refresh = AsyncHandler(async (req, res, next) => {
     const { refresh_token } = req.cookies;
 
     //fetch userId attached to request object from authMiddleware
-    const userId = req.userId;
 
-    const user = await User.findById(userId);
-    console.log(user);
+    const user = await User.findOne({ refreshToken: refresh_token });
+
     if (!user || !refresh_token || user.refreshToken !== refresh_token)
       throw new ForbiddenRequestError("User not Found - invalid refresh token");
     // after validating logged in user, pass a new access token
