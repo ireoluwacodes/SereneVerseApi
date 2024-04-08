@@ -215,6 +215,7 @@ const refresh = AsyncHandler(async (req, res, next) => {
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
+      data: user,
       token: accessToken,
     });
   } catch (error) {
