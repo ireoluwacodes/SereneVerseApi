@@ -1,7 +1,6 @@
 const { Router } = require("express");
 
 const authMiddleware = require("../middlewares/auth.middleware");
-const isAdmin = require("../middlewares/isAdmin.middleware");
 const {
   startNewStreak,
   endCurrentStreak,
@@ -10,6 +9,7 @@ const {
   getActiveStreak,
   myStreak,
 } = require("../controllers/streak.controller");
+const validator = require("../middlewares/validator.middleware");
 
 const streakRouter = Router();
 

@@ -11,6 +11,7 @@ const {
   getAllDailyPost,
   getTodayPost,
 } = require("../controllers/post.controller");
+const validator = require("../middlewares/validator.middleware");
 
 const postRouter = Router();
 

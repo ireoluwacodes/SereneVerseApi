@@ -9,11 +9,11 @@ const {
   logOut,
 } = require("../controllers/auth.controller");
 const validator = require("../middlewares/validator.middleware");
-const { loginSchema } = require("../validators/login.schema");
-const { createUserSchema } = require("../validators/signup.schema");
-const { checkEmailSchema } = require("../validators/checkForEmail.schema");
-const { checkPassSchema } = require("../validators/checkForPass.schema");
-const { otpSchema } = require("../validators/otp.schema");
+const { loginSchema } = require("../validators/auth/login.schema");
+const { createUserSchema } = require("../validators/auth/signup.schema");
+const { checkEmailSchema } = require("../validators/auth/checkForEmail.schema");
+const { checkPassSchema } = require("../validators/auth/checkForPass.schema");
+const { otpSchema } = require("../validators/auth/otp.schema");
 const authMiddleware = require("../middlewares/auth.middleware");
 
 const authRouter = Router();

@@ -9,10 +9,24 @@ const {
   deleteResource,
   updateResource,
 } = require("../controllers/resource.controller");
+const validator = require("../middlewares/validator.middleware");
+const {
+  createResourceSchema,
+} = require("../validators/resource/create.schema");
+const {
+  updateResourceSchema,
+} = require("../validators/resource/update.schema");
 
 const resourceRouter = Router();
 
-resourceRouter.route("/create").post(authMiddleware, isAdmin, addNewResource);
+resourceRouter
+  .route("/create")
+  .post(
+    validator(createResourceSchema),
+    authMiddleware,
+    isAdmin,
+    addNewResource
+  );
 
 resourceRouter.route("/video").get(authMiddleware, getVideoResources);
 
@@ -24,7 +38,12 @@ resourceRouter
 
 resourceRouter
   .route("/update/:id")
-  .patch(authMiddleware, isAdmin, updateResource);
+  .patch(
+    validator(updateResourceSchema),
+    authMiddleware,
+    isAdmin,
+    updateResource
+  );
 
 module.exports = {
   resourceRouter,
