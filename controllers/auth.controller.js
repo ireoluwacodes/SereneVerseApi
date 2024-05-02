@@ -7,7 +7,7 @@ const { User } = require("../models/user.model");
 const { hashPassword, comparePassword } = require("../utils/hashing.utils");
 const { signToken, signRefreshToken } = require("../utils/token.utils");
 const { sendMail } = require("../utils/mailer.utils");
-const { generateOtp } = require("../utils/generateOtp");
+const { generateOtp } = require("../utils/otp.utils");
 
 // controller to register a user
 const register = AsyncHandler(async (req, res, next) => {
@@ -34,6 +34,7 @@ const register = AsyncHandler(async (req, res, next) => {
       phone,
       email,
       role,
+      loginScheme: "email",
       dateOfBirth,
     };
     // save the user details as a new entry in the db

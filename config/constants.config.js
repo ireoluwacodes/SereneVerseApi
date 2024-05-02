@@ -8,6 +8,9 @@ const nodeEnv = process.env.NODE_ENV;
 const mailHost = process.env.MAIL_HOST;
 const mailPass = process.env.PASS;
 const mailUser = process.env.USER;
+const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
+const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
+const cloudinaryName = process.env.CLOUDINARY_CLOUD_NAME;
 
 module.exports = {
   PORT,
@@ -17,5 +20,8 @@ module.exports = {
   nodeEnv,
   mailHost,
   mailUser,
-  mailPass
+  mailPass,
+  cloudinaryApiKey,
+  cloudinaryApiSecret,
+  cloudinaryName,
 };

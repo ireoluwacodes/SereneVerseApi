@@ -3,8 +3,9 @@ const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { hashPassword, comparePassword } = require("../utils/hashing.utils");
-const { validateDbId } = require("../utils/validateMongoId");
+const { validateDbId } = require("../utils/mongoId.utils");
 const { User } = require("../models/user.model");
+const { cloudinaryUpload } = require("../config/cloudinary.config");
 
 // controller to retrieve all users(admin)
 const getAllUsers = AsyncHandler(async (req, res, next) => {
@@ -73,6 +74,54 @@ const updatePassword = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const updateProfile = AsyncHandler(async (req, res, next) => {
+  try {
+    const id = req.userId;
+    await validateDbId(id);
+
+    // destructure values from request body
+    const { newPass, currPass } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) throw new ForbiddenRequestError("User not found");
+
+    // validate old password and set new password
+    const validate = await comparePassword(user.hash, currPass);
+    if (!validate) throw new UnauthorizedRequestError("Password mismatch");
+
+    const hash = await hashPassword(newPass);
+    user.hash = hash;
+    await user.save();
+
+    const sanitizedUser = {
+      ...user._doc,
+      hash: undefined,
+      password: newPass,
+      __v: undefined,
+      otp: undefined,
+      otpCreatedAt: undefined,
+      otpExpiresIn: undefined,
+      refreshToken: undefined,
+    };
+    return res.status(status.CREATED).json({
+      status: "success",
+      statusCode: status.CREATED,
+      data: sanitizedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+const uploadProfileImage = AsyncHandler(async (req, res, next) =>{
+  try {
+    cloudinaryUpload
+  } catch (error) {
+    next(error);
+  }
+})
+
 const getExpertContact = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
@@ -89,8 +138,19 @@ const getExpertContact = AsyncHandler(async (req, res, next) => {
   }
 });
 
+getContactHistory = AsyncHandler(async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = {
   getAllUsers,
+  updateProfile,
   updatePassword,
   getExpertContact,
+  getContactHistory,
+  uploadProfileImage,
 };

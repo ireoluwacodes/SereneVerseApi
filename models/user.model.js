@@ -28,10 +28,21 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role: {
+    loginScheme: {
       type: String,
       required: true,
-      enum: ["admin", "user", "consultant"],
+      enum: ["email", "google"],
+    },
+    expertsContacted: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+    role: {
+      type: Number,
+      required: true,
+      enum: [1, 2, 3],
     },
     refreshToken: {
       type: String,
