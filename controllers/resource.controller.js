@@ -2,7 +2,7 @@ const AsyncHandler = require("express-async-handler");
 const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
-const { validateDbId } = require("../utils/validateMongoId");
+const { validateDbId } = require("../utils/mongoId.utils");
 const { Resource } = require("../models/resources.model");
 
 module.exports.addNewResource = AsyncHandler(async (req, res, next) => {

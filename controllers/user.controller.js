@@ -80,23 +80,21 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
     await validateDbId(id);
 
     // destructure values from request body
-    const { newPass, currPass } = req.body;
+    const { dateOfBirth, fullName, phone } = req.body;
 
-    const user = await User.findById(id);
-    if (!user) throw new ForbiddenRequestError("User not found");
-
-    // validate old password and set new password
-    const validate = await comparePassword(user.hash, currPass);
-    if (!validate) throw new UnauthorizedRequestError("Password mismatch");
-
-    const hash = await hashPassword(newPass);
-    user.hash = hash;
-    await user.save();
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        dateOfBirth,
+        fullName,
+        phone,
+      },
+      { new: true }
+    );
 
     const sanitizedUser = {
-      ...user._doc,
+      ...user,
       hash: undefined,
-      password: newPass,
       __v: undefined,
       otp: undefined,
       otpCreatedAt: undefined,
@@ -113,14 +111,15 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
   }
 });
 
-
-const uploadProfileImage = AsyncHandler(async (req, res, next) =>{
+const uploadProfileImage = AsyncHandler(async (req, res, next) => {
   try {
-    cloudinaryUpload
+    const id = req.userId;
+    await validateDbId(id);
+
   } catch (error) {
     next(error);
   }
-})
+});
 
 const getExpertContact = AsyncHandler(async (req, res, next) => {
   try {
@@ -140,11 +139,13 @@ const getExpertContact = AsyncHandler(async (req, res, next) => {
 
 getContactHistory = AsyncHandler(async (req, res, next) => {
   try {
+    const id = req.userId;
+    await validateDbId(id);
     
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 module.exports = {
   getAllUsers,

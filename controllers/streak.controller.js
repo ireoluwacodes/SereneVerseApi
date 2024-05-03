@@ -2,7 +2,7 @@ const AsyncHandler = require("express-async-handler");
 const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
-const { validateDbId } = require("../utils/validateMongoId");
+const { validateDbId } = require("../utils/mongoId.utils");
 const { Streak } = require("../models/streaks.model");
 
 module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
@@ -37,6 +37,7 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
 
     const streak = await Streak.findById(id);
     streak.currentStreak = streak.currentStreak + 1;
+    streak.lastUpdated = new Date();
     await streak.save();
     return res.status(status.OK).json({
       status: "success",

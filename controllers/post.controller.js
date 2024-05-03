@@ -3,7 +3,7 @@ const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { Post } = require("../models/post.model");
-const { validateDbId } = require("../utils/validateMongoId");
+const { validateDbId } = require("../utils/mongoId.utils");
 
 module.exports.createDailyPost = AsyncHandler(async (req, res, next) => {
   try {
