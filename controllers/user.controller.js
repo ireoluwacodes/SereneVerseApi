@@ -113,11 +113,66 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
 
 const uploadProfileImage = AsyncHandler(async (req, res, next) => {
   try {
-    const id = req.userId;
+    const { userId } = req;
     await validateDbId(id);
+    const uploader = (path) => cloudinaryUpload(path, "image");
+    const file = req.file;
+    const { path } = file;
+    const url = await uploader(path);
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        displayImage: url,
+      },
+      { new: true }
+    );
+    const sanitizedUser = {
+      ...user,
+      hash: undefined,
+      __v: undefined,
+      otp: undefined,
+      otpCreatedAt: undefined,
+      otpExpiresIn: undefined,
+      refreshToken: undefined,
+    };
+    return res.status(status.CREATED).json({
+      status: "success",
+      statusCode: status.CREATED,
+      data: sanitizedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
-    const file = req
+const addExpertContact = AsyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const { id } = req.params;
+    await validateDbId(id, userId);
 
+    const expert = await User.findById(id);
+    if (!expert || expert.role != 2)
+      throw new ForbiddenRequestError("ID must be that of a consultant");
+
+    const user = await User.findByIdAndUpdate(userId, {
+      $push: { expertsContacted: id },
+    });
+
+    const sanitizedUser = {
+      ...user,
+      hash: undefined,
+      __v: undefined,
+      otp: undefined,
+      otpCreatedAt: undefined,
+      otpExpiresIn: undefined,
+      refreshToken: undefined,
+    };
+    return res.status(status.CREATED).json({
+      status: "success",
+      statusCode: status.CREATED,
+      data: sanitizedUser,
+    });
   } catch (error) {
     next(error);
   }
@@ -126,7 +181,7 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
 const getExpertContact = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
-    const expertArr = await User.find({ role: "consultant" });
+    const expertArr = await User.find({ role: 2 });
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
@@ -144,12 +199,12 @@ getContactHistory = AsyncHandler(async (req, res, next) => {
     const id = req.userId;
     await validateDbId(id);
 
-    const user = await User.findById(id)
+    const user = await User.findById(id).populate("expertsContacted");;
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
-      data: { 
-        history : user.expertsContacted,
+      data: {
+        history: user.expertsContacted,
       },
     });
   } catch (error) {
@@ -162,6 +217,7 @@ module.exports = {
   updateProfile,
   updatePassword,
   getExpertContact,
+  addExpertContact,
   getContactHistory,
   uploadProfileImage,
 };

@@ -4,6 +4,7 @@ const {
   getAllUsers,
   updatePassword,
   getExpertContact,
+  addExpertContact,
   uploadProfileImage,
   getContactHistory,
   updateProfile,
@@ -30,6 +31,8 @@ userRouter
   .post(validator(editProfileSchema), authMiddleware, updateProfile);
 
 userRouter.route("/contact-history").get(authMiddleware, getContactHistory);
+
+userRouter.route("/add-expert-contact/:id").get(authMiddleware, addExpertContact);
 
 userRouter.route("/").get(authMiddleware, isAdmin, getAllUsers);
 
