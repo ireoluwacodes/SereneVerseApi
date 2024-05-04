@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
     },
     isAdmin: {
       type: Boolean,
@@ -22,11 +21,9 @@ const userSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      required: true,
     },
     hash: {
       type: String,
-      required: true,
     },
     loginScheme: {
       type: String,

@@ -38,8 +38,23 @@ const signRefreshToken = async (id) => {
   }
 };
 
+const signGoogleToken = async (id) => {
+  try {
+    let payload = {
+      id,
+    };
+    let token = jwt.sign(payload, secret, {
+      expiresIn: "2d",
+    });
+    return token;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   signRefreshToken,
   signToken,
+  signGoogleToken,
   verifyToken,
 };

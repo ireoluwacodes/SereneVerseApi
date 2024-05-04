@@ -5,7 +5,11 @@ const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { User } = require("../models/user.model");
 const { hashPassword, comparePassword } = require("../utils/hashing.utils");
-const { signToken, signRefreshToken } = require("../utils/token.utils");
+const {
+  signToken,
+  signRefreshToken,
+  signGoogleToken,
+} = require("../utils/token.utils");
 const { sendMail } = require("../utils/mailer.utils");
 const { generateOtp } = require("../utils/otp.utils");
 
@@ -90,6 +94,34 @@ const login = AsyncHandler(async (req, res, next) => {
       password,
       _v: undefined,
     };
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      token: accessToken,
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
+  try {
+    const { user } = req;
+    // sign access and refresh token to keep a user logged in
+    const accessToken = await signToken(user._id);
+    const refreshToken = await signRefreshToken(user._id);
+
+    // store refresh token on the users browser and in the db
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 96 * 60 * 60 * 1000,
+      sameSite: "none",
+    });
+
+    await User.findByIdAndUpdate(user._id, { refreshToken }, { new: true });
+
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
@@ -264,6 +296,7 @@ const logOut = AsyncHandler(async (req, res, next) => {
 module.exports = {
   register,
   login,
+  handleGoogleAuth,
   forgotPassword,
   resetPassword,
   confirmOtp,

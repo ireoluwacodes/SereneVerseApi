@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const passport = require('passport');
 
 const notFound = require("../middlewares/notfound.middleware");
 const errHandler = require("../middlewares/errhandler.middleware");
@@ -11,6 +12,7 @@ const userRouter = require("../routes/user.route");
 const { resourceRouter } = require("../routes/resource.route");
 const { postRouter } = require("../routes/post.route");
 const { streakRouter } = require("../routes/streak.route");
+const { sessionSecret } = require("./constants.config");
 
 const app = express();
 
@@ -21,6 +23,11 @@ app.use(
     credentials: true,
   })
 );
+app.use(require('express-session')({ secret: sessionSecret, resave: true, saveUninitialized: true }));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

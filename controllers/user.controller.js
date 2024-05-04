@@ -116,6 +116,8 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
     const id = req.userId;
     await validateDbId(id);
 
+    const file = req
+
   } catch (error) {
     next(error);
   }
@@ -141,7 +143,15 @@ getContactHistory = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
     await validateDbId(id);
-    
+
+    const user = await User.findById(id)
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      data: { 
+        history : user.expertsContacted,
+      },
+    });
   } catch (error) {
     next(error);
   }

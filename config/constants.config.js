@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const PORT = process.env.PORT || "3000";
@@ -11,6 +12,9 @@ const mailUser = process.env.USER;
 const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
 const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
 const cloudinaryName = process.env.CLOUDINARY_CLOUD_NAME;
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const sessionSecret = process.env.SESSION_SECRET
 
 module.exports = {
   PORT,
@@ -24,4 +28,7 @@ module.exports = {
   cloudinaryApiKey,
   cloudinaryApiSecret,
   cloudinaryName,
+  googleClientId,
+  googleClientSecret,
+  sessionSecret
 };
