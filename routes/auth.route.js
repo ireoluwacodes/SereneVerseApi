@@ -16,7 +16,7 @@ const { checkEmailSchema } = require("../validators/auth/checkForEmail.schema");
 const { checkPassSchema } = require("../validators/auth/checkForPass.schema");
 const { otpSchema } = require("../validators/auth/otp.schema");
 const authMiddleware = require("../middlewares/auth.middleware");
-const passport = require("passport");
+const passport = require("../middlewares/auth.google.middleware");
 
 const authRouter = Router();
 
@@ -24,11 +24,9 @@ authRouter.route("/register").post(validator(createUserSchema), register);
 
 authRouter.route("/login").post(validator(loginSchema), login);
 
-authRouter.route("/google").get(
-  passport.authenticate("google", {
-    scope: ["email", "profile"],
-  })
-);
+authRouter
+  .route("/google")
+  .get(passport.authenticate("google", { scope: ["email", "profile"] }));
 
 authRouter
   .route("/google/callback")
