@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("../middlewares/auth.google.middleware");
+const socketIo = require("socket.io");
+const http = require("http");
 
 const notFound = require("../middlewares/notfound.middleware");
 const errHandler = require("../middlewares/errhandler.middleware");
@@ -33,6 +35,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
+
+// socket(chat) shits
+export const server = http.createServer(app);
+export const io = socketIo(server);
 
 app.use(router);
 app.use("/auth", authRouter);
