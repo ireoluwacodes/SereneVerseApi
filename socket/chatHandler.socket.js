@@ -11,10 +11,10 @@ module.exports = (io, socket) => {
     await User.findByIdAndUpdate(id, { isOnline: true });
   };
 
-  const receiveNewChats = () => {
+  const handleNewChats = (data) => {
     socket.broadcast.emit("loadNewChats", data);
   };
-  const loadOldChats = async () => {
+  const loadOldChats = async (data) => {
     const chats = await Chat.find({
       $or: [
         { senderId: data.sender_id, receiverId: data.receiver_id },
@@ -34,5 +34,14 @@ module.exports = (io, socket) => {
   };
 
   // initialize the socket events with the handlers
+
   updateOnlineStatus();
+
+  socket.on("chats:new", handleNewChats);
+
+  socket.on("chats:old", loadOldChats);
+
+  socket.on("chats:deleted", handleDeletedChat);
+
+  socket.on("disconnect", disconnectEvent);
 };
