@@ -36,13 +36,13 @@ const userSchema = new mongoose.Schema(
     expertsContacted: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "User",
       },
     ],
     streaks : [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "streak",
+        ref: "Streak",
       }
     ],
     role: {

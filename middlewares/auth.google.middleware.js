@@ -26,7 +26,7 @@ passport.use(
             email: profile.emails[0].value,
             loginScheme: "google",
             displayImage: dp,
-            role: 2,
+            role: 3,
           });
         } else {
           if (user.loginScheme !== "google")

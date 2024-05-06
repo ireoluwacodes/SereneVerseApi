@@ -20,7 +20,7 @@ const resourceSchema = new Schema(
     },
     postedBy: {
       type: Types.ObjectId,
-      ref: "user",
+      ref: "User",
     },
   },
   {

@@ -91,7 +91,7 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
         phone,
       },
       { new: true }
-    );
+    ).lean();
 
     const sanitizedUser = {
       ...user,
@@ -161,7 +161,7 @@ const addExpertContact = AsyncHandler(async (req, res, next) => {
 
     const user = await User.findByIdAndUpdate(userId, {
       $addToSet: { expertsContacted: id },
-    });
+    }).lean();
 
     const sanitizedUser = {
       ...user,
