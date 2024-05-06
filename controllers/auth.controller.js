@@ -67,6 +67,12 @@ const login = AsyncHandler(async (req, res, next) => {
     if (!findUser) {
       throw new UnauthorizedRequestError("User not Found");
     }
+
+    if (findUser.loginScheme !== "email")
+      throw new UnauthorizedRequestError(
+        `Invalid login scheme - login with ${user.loginScheme}`
+      );
+
     // compare the input password with the hash in the db
     const compare = await comparePassword(findUser.hash, password);
     if (!compare) {
