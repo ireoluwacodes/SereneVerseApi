@@ -11,7 +11,7 @@ const { cloudinaryUpload } = require("../config/cloudinary.config");
 const getAllUsers = AsyncHandler(async (req, res, next) => {
   try {
     // fetches all users in the db
-    const users = await User.find({});
+    const users = await User.find({}).populate(["expertsContacted", "streaks"]);
 
     // removes sensitive/unnecessary fields from each user
     const sanitizedUsers = users.map((user) => {
@@ -156,7 +156,7 @@ const addExpertContact = AsyncHandler(async (req, res, next) => {
       throw new ForbiddenRequestError("ID must be that of a consultant");
 
     const user = await User.findByIdAndUpdate(userId, {
-      $addToSet : { expertsContacted: id },
+      $addToSet: { expertsContacted: id },
     });
 
     const sanitizedUser = {
@@ -194,12 +194,12 @@ const getExpertContact = AsyncHandler(async (req, res, next) => {
   }
 });
 
-getContactHistory = AsyncHandler(async (req, res, next) => {
+const getContactHistory = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
     await validateDbId(id);
 
-    const user = await User.findById(id).populate("expertsContacted");;
+    const user = await User.findById(id).populate("expertsContacted");
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,

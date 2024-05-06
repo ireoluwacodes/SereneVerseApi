@@ -10,6 +10,6 @@ chatRouter
   .route("/create")
   .post(validator(createChatSchema), authMiddleware, createChat);
 
-chatRouter.route("/delete/:id").post(authMiddleware, deleteChat);
+chatRouter.route("/delete/:id").delete(authMiddleware, deleteChat);
 
 module.exports = chatRouter;

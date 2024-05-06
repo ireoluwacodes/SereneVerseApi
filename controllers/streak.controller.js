@@ -4,6 +4,7 @@ const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { validateDbId } = require("../utils/mongoId.utils");
 const { Streak } = require("../models/streaks.model");
+const { User } = require("../models/user.model");
 
 module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
   try {
@@ -15,6 +16,10 @@ module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
       userId,
       name,
       currentStreakStarted: new Date(Date.now()),
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { streaks: streak._id },
     });
 
     return res.status(status.OK).json({

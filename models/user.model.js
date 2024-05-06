@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema(
         ref: "user",
       },
     ],
+    streaks : [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "streak",
+      }
+    ],
     role: {
       type: Number,
       required: true,
