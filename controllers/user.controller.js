@@ -114,7 +114,7 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
 const uploadProfileImage = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
-    await validateDbId(id);
+    await validateDbId(userId);
     const uploader = (path) => cloudinaryUpload(path, "image");
     const file = req.file;
     const { path } = file;
