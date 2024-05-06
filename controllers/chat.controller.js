@@ -13,7 +13,7 @@ const createChat = AsyncHandler(async (req, res, next) => {
       receiverId,
       message,
     });
-    return res.status(httpStatus.OK).json({
+    return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
@@ -35,7 +35,7 @@ const deleteChat = AsyncHandler(async (req, res, next) => {
       status: "deleted",
     });
     
-    return res.status(httpStatus.OK).json({
+    return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
