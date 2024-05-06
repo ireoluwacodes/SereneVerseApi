@@ -156,7 +156,7 @@ const addExpertContact = AsyncHandler(async (req, res, next) => {
       throw new ForbiddenRequestError("ID must be that of a consultant");
 
     const user = await User.findByIdAndUpdate(userId, {
-      $push: { expertsContacted: id },
+      $addToSet : { expertsContacted: id },
     });
 
     const sanitizedUser = {
