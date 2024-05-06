@@ -3,7 +3,8 @@ const { verifyToken } = require("../utils/token.utils");
 
 const socketAuthMiddleware = async (socket) => {
   try {
-    const { token } = socket.handshake.auth;
+    const { token, id } = socket.handshake.auth;
+    if (!token || !id) throw new Error();
     const payload = await verifyToken(token);
     if (!payload) throw new Error();
     return true;

@@ -1,3 +1,5 @@
+import chatRouter from "../routes/chat.route";
+
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -53,6 +55,7 @@ app.use("/users", userRouter);
 app.use("/resource", resourceRouter);
 app.use("/post", postRouter);
 app.use("/streak", streakRouter);
+app.use("/chat", chatRouter);
 
 app.use(notFound);
 app.use(errHandler);

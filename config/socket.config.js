@@ -17,7 +17,7 @@ chat.use((socket, next) => {
 
 // connection handler
 const onConnection = (socket) => {
-    registerChatHandlers(io, socket);
+    registerChatHandlers(chat, socket);
   }
 
 
