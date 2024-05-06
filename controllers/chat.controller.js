@@ -30,11 +30,15 @@ const deleteChat = AsyncHandler(async (req, res, next) => {
     const { id } = req.params;
     await validateDbId(id);
 
-    const chat = await Chat.findByIdAndUpdate(id, {
-      message: "This message was deleted",
-      status: "deleted",
-    });
-    
+    const chat = await Chat.findByIdAndUpdate(
+      id,
+      {
+        message: "This message was deleted",
+        status: "deleted",
+      },
+      { new: true }
+    );
+
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
