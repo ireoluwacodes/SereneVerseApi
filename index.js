@@ -1,4 +1,4 @@
-const app = require("./config/app.config");
+const { app } = require("./config/app.config");
 const { PORT } = require("./config/constants.config");
 const { ConnectDb } = require("./config/db.config");
 const cron = require("node-cron");

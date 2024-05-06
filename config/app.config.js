@@ -1,5 +1,3 @@
-import chatRouter from "../routes/chat.route";
-
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -13,6 +11,7 @@ const errHandler = require("../middlewares/errhandler.middleware");
 const router = require("../routes/app.route");
 const authRouter = require("../routes/auth.route");
 const userRouter = require("../routes/user.route");
+const chatRouter = require("../routes/chat.route");
 const { resourceRouter } = require("../routes/resource.route");
 const { postRouter } = require("../routes/post.route");
 const { streakRouter } = require("../routes/streak.route");
@@ -41,8 +40,8 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // socket(chat) shits
-export const server = http.createServer(app);
-export const io = new Server(server, {
+const server = http.createServer(app);
+const io = new Server(server, {
   cors: {
     origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
     credentials: true,
@@ -60,4 +59,8 @@ app.use("/chat", chatRouter);
 app.use(notFound);
 app.use(errHandler);
 
-module.exports = app;
+module.exports = {
+  app,
+  server,
+  io,
+};
