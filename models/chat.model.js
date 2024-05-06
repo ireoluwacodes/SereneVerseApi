@@ -15,6 +15,11 @@ const chatSchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      default: "active",
+      enum: ["active", "deleted"],
+    },
   },
   {
     timestamps: true,
@@ -25,5 +30,5 @@ const chatSchema = new Schema(
 const Chat = model("Chat", chatSchema);
 
 module.exports = {
-    Chat
-}
+  Chat,
+};
