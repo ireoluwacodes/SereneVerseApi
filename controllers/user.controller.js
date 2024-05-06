@@ -1,4 +1,5 @@
 const AsyncHandler = require("express-async-handler");
+const fs = require("fs");
 const status = require("http-status");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
@@ -118,14 +119,17 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
     const uploader = (path) => cloudinaryUpload(path, "image");
     const file = req.file;
     const { path } = file;
-    const url = await uploader(path);
+    const { url } = await uploader(path);
     const user = await User.findByIdAndUpdate(
       userId,
       {
         displayImage: url,
       },
       { new: true }
-    );
+    ).lean();
+    
+    fs.unlinkSync(path);
+
     const sanitizedUser = {
       ...user,
       hash: undefined,

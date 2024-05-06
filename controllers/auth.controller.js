@@ -244,17 +244,25 @@ const refresh = AsyncHandler(async (req, res, next) => {
 
     //fetch userId attached to request object from authMiddleware
 
-    const user = await User.findOne({ refreshToken: refresh_token });
+    const user = await User.findOne({ refreshToken: refresh_token }).lean();
 
     if (!user || !refresh_token || user.refreshToken !== refresh_token)
       throw new ForbiddenRequestError("User not Found - invalid refresh token");
     // after validating logged in user, pass a new access token
     const accessToken = await signToken(user._id);
 
+    const sanitizedUser = {
+      ...user,
+      refreshToken: undefined,
+      hash: undefined,
+      password,
+      _v: undefined,
+    };
+
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
-      data: user,
+      data: sanitizedUser,
       token: accessToken,
     });
   } catch (error) {
