@@ -14,6 +14,7 @@ const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
 const cloudinaryName = process.env.CLOUDINARY_CLOUD_NAME;
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const googleClientRedirect = process.env.CLIENT_REDIRECT;
 const sessionSecret = process.env.SESSION_SECRET
 
 module.exports = {
@@ -30,5 +31,6 @@ module.exports = {
   cloudinaryName,
   googleClientId,
   googleClientSecret,
+  googleClientRedirect,
   sessionSecret
 };

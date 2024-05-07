@@ -25,7 +25,7 @@ module.exports = (io, socket) => {
     socket.broadcast.emit("loadOldChats", { chats: chats });
   };
 
-  const handleDeletedChat = () => {
+  const handleDeletedChat = (id) => {
     socket.broadcast.emit("clearDeletedChats", id);
   };
 

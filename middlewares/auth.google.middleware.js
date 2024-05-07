@@ -3,6 +3,7 @@ const { User } = require("../models/user.model");
 const {
   googleClientId,
   googleClientSecret,
+  googleClientRedirect,
 } = require("../config/constants.config");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 
@@ -13,7 +14,7 @@ passport.use(
     {
       clientID: googleClientId,
       clientSecret: googleClientSecret,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: googleClientRedirect,
     },
     async function (accessToken, refreshToken, profile, cb) {
       try {
