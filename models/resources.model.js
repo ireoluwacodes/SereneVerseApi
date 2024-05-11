@@ -9,9 +9,14 @@ const resourceSchema = new Schema(
       type: Date,
       required: true,
     },
-    content: {
+    author: {
       type: String,
-      required: true,
+    },
+    description: {
+      type: String,
+    },
+    link: {
+      type: String,
     },
     type: {
       type: String,

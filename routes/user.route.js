@@ -8,6 +8,9 @@ const {
   uploadProfileImage,
   getContactHistory,
   updateProfile,
+  createAdmin,
+  createConsultant,
+  upload
 } = require("../controllers/user.controller");
 const validator = require("../middlewares/validator.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -25,6 +28,10 @@ userRouter
 userRouter
   .route("/upload")
   .post(authMiddleware, uploadPhoto.single("image"), uploadProfileImage);
+
+  userRouter
+  .route("/admin/upload")
+  .post(authMiddleware, isAdmin, uploadPhoto.single("image"), upload);
 
 userRouter
   .route("/edit-profile")

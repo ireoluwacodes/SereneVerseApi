@@ -9,19 +9,24 @@ module.exports.addNewResource = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     await validateDbId(userId);
-    const { datePosted, type, content } = req.body;
+    const { articles, videos } = req.body;
 
-    const resource = await Resource.create({
-      postedBy: userId,
-      datePosted,
-      type,
-      content,
-    });
+    const typedArticles = articles.map(article =>{
+      article.type = "article"
+    })
+
+    const typedVideos = videos.map(video =>{
+      video.type = "video"
+    })
+    const newResources = [...typedArticles,...typedVideos]
+
+    const resources = await Resource.create(newResources);
+
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
-        resource,
+        resources,
       },
     });
   } catch (error) {

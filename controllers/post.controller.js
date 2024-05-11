@@ -9,10 +9,12 @@ module.exports.createDailyPost = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     await validateDbId(userId);
-    const { content } = req.body;
+    const { title, content, url } = req.body;
 
     const post = await Post.create({
       postedBy: userId,
+      title,
+      url,
       datePosted: new Date(Date.now()),
       content,
     });

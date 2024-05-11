@@ -26,7 +26,7 @@ module.exports = (io, socket) => {
   };
 
   const handleDeletedChat = (id) => {
-    socket.broadcast.emit("clearDeletedChats", id);
+    socket.broadcast.emit("clearDeletedChats", { id });
   };
 
   const disconnectEvent = () => {

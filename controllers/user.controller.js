@@ -75,6 +75,23 @@ const updatePassword = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const createAdmin = AsyncHandler((req, res, next)=>{
+  try {
+
+  } catch (error) {
+    next(error)
+  }
+})
+
+const createConsultant = AsyncHandler((req, res, next)=>{
+  try {
+      const {fullName, email, phone, dateOfBirth} = req.body
+  } catch (error) {
+    next(error)
+  }
+})
+
+
 const updateProfile = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
@@ -148,6 +165,26 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+const upload = AsyncHandler(async(req,res,next)=>{
+  try {
+    const uploader = (path) => cloudinaryUpload(path, "image");
+    const file = req.file;
+    const { path } = file;
+    const { url } = await uploader(path)
+    fs.unlinkSync(path);
+
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      data: {
+        url
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+})
 
 const addExpertContact = AsyncHandler(async (req, res, next) => {
   try {
@@ -223,5 +260,8 @@ module.exports = {
   getExpertContact,
   addExpertContact,
   getContactHistory,
+  createAdmin,
+  createConsultant,
+  upload,
   uploadProfileImage,
 };
