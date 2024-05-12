@@ -10,7 +10,7 @@ const {
   updateProfile,
   createAdmin,
   createConsultant,
-  upload
+  upload,
 } = require("../controllers/user.controller");
 const validator = require("../middlewares/validator.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -18,6 +18,9 @@ const isAdmin = require("../middlewares/isAdmin.middleware");
 const { updatePassSchema } = require("../validators/auth/updatePass.schema");
 const { uploadPhoto } = require("../middlewares/upload.middleware");
 const { editProfileSchema } = require("../validators/auth/editProfile.schema");
+const {
+  createConsultantSchema,
+} = require("../validators/auth/createConsultant.schema");
 
 const userRouter = Router();
 
@@ -26,10 +29,21 @@ userRouter
   .post(validator(updatePassSchema), authMiddleware, updatePassword);
 
 userRouter
+  .route("/admin/create-expert")
+  .post(
+    validator(createConsultantSchema),
+    authMiddleware,
+    isAdmin,
+    createConsultant
+  );
+
+// userRouter.route("/admin/create-admin").post(validator(createAdminSchema), authMiddleware, isAdmin, createAdmin);
+
+userRouter
   .route("/upload")
   .post(authMiddleware, uploadPhoto.single("image"), uploadProfileImage);
 
-  userRouter
+userRouter
   .route("/admin/upload")
   .post(authMiddleware, isAdmin, uploadPhoto.single("image"), upload);
 
@@ -39,7 +53,9 @@ userRouter
 
 userRouter.route("/contact-history").get(authMiddleware, getContactHistory);
 
-userRouter.route("/add-expert-contact/:id").get(authMiddleware, addExpertContact);
+userRouter
+  .route("/add-expert-contact/:id")
+  .get(authMiddleware, addExpertContact);
 
 userRouter.route("/").get(authMiddleware, isAdmin, getAllUsers);
 

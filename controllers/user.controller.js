@@ -7,6 +7,7 @@ const { hashPassword, comparePassword } = require("../utils/hashing.utils");
 const { validateDbId } = require("../utils/mongoId.utils");
 const { User } = require("../models/user.model");
 const { cloudinaryUpload } = require("../config/cloudinary.config");
+const { sendConsultantMail } = require("../utils/mailer.utils");
 
 // controller to retrieve all users(admin)
 const getAllUsers = AsyncHandler(async (req, res, next) => {
@@ -85,7 +86,9 @@ const createAdmin = AsyncHandler((req, res, next)=>{
 
 const createConsultant = AsyncHandler((req, res, next)=>{
   try {
+     q1p
       const {fullName, email, phone, dateOfBirth} = req.body
+      // sendConsultantMail
   } catch (error) {
     next(error)
   }
