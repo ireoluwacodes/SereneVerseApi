@@ -8,6 +8,7 @@ const { hashPassword, comparePassword } = require("../utils/hashing.utils");
 const {
   signToken,
   signRefreshToken,
+  verifyToken,
 } = require("../utils/token.utils");
 const { sendMail } = require("../utils/mailer.utils");
 const { generateOtp } = require("../utils/otp.utils");
@@ -138,13 +139,34 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   }
 });
 
-const verifyConsultant = AsyncHandler(async(req, res, next)=>{
+const verifyConsultant = AsyncHandler(async (req, res, next) => {
   try {
-    
+    const { token } = req.params;
+    if (!token) throw new ForbiddenRequestError("Invalid Parameters");
+
+    const id = await verifyToken(token);
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        status: "complete",
+      },
+      { new: true }
+    ).lean();
+
+    if (!user) throw new ForbiddenRequestError("User not Found");
+
+    const newToken = await signToken(user._id);
+
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      token: newToken,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 const forgotPassword = AsyncHandler(async (req, res, next) => {
   try {

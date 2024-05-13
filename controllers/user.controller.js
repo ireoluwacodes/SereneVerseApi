@@ -109,7 +109,7 @@ const createConsultant = AsyncHandler(async (req, res, next) => {
     const subject = "New Consultant At SereneVerse";
     const template = "createConsultant";
     const token = await signToken(user._id);
-    const link = `http://localhost:3000/auth/verify-consultant/${token}`;
+    const link = `http://localhost:3000/auth/verify-expert/${token}`;
     // sendConsultantMail
     response = await sendConsultantMail(
       email,
