@@ -131,12 +131,19 @@ const createConsultant = AsyncHandler(async (req, res, next) => {
 
 const deleteConsultant = AsyncHandler(async (req, res, next) => {
   try {
-    const {id} = req.params
+    const { id } = req.params;
+    await validateDbId(id);
+
+    await User.findByIdAndDelete(id);
+
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+    });
   } catch (error) {
     next(error);
   }
 });
-
 
 const updateProfile = AsyncHandler(async (req, res, next) => {
   try {

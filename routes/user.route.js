@@ -11,6 +11,7 @@ const {
   createAdmin,
   createConsultant,
   upload,
+  deleteConsultant,
 } = require("../controllers/user.controller");
 const validator = require("../middlewares/validator.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -36,6 +37,10 @@ userRouter
     isAdmin,
     createConsultant
   );
+
+userRouter
+  .route("/admin/delete-expert/:id")
+  .delete(authMiddleware, isAdmin, deleteConsultant);
 
 // userRouter.route("/admin/create-admin").post(validator(createAdminSchema), authMiddleware, isAdmin, createAdmin);
 
