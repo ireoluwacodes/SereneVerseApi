@@ -8,6 +8,7 @@ const {
   refresh,
   logOut,
   handleGoogleAuth,
+  verifyConsultant,
 } = require("../controllers/auth.controller");
 const validator = require("../middlewares/validator.middleware");
 const { loginSchema } = require("../validators/auth/login.schema");
@@ -31,6 +32,8 @@ authRouter
 authRouter
   .route("/google/callback")
   .get(passport.authenticate("google", { session: false }), handleGoogleAuth);
+
+authRouter.route("/verify-expert/:token").get(verifyConsultant)
 
 authRouter
   .route("/password/forgot")

@@ -8,7 +8,6 @@ const { hashPassword, comparePassword } = require("../utils/hashing.utils");
 const {
   signToken,
   signRefreshToken,
-  signGoogleToken,
 } = require("../utils/token.utils");
 const { sendMail } = require("../utils/mailer.utils");
 const { generateOtp } = require("../utils/otp.utils");
@@ -139,6 +138,14 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const verifyConsultant = AsyncHandler(async(req, res, next)=>{
+  try {
+    
+  } catch (error) {
+    next(error)
+  }
+})
+
 const forgotPassword = AsyncHandler(async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -255,7 +262,6 @@ const refresh = AsyncHandler(async (req, res, next) => {
       ...user,
       refreshToken: undefined,
       hash: undefined,
-      password,
       _v: undefined,
     };
 
@@ -315,5 +321,6 @@ module.exports = {
   resetPassword,
   confirmOtp,
   logOut,
+  verifyConsultant,
   refresh,
 };

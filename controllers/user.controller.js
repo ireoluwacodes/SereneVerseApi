@@ -8,6 +8,7 @@ const { validateDbId } = require("../utils/mongoId.utils");
 const { User } = require("../models/user.model");
 const { cloudinaryUpload } = require("../config/cloudinary.config");
 const { sendConsultantMail } = require("../utils/mailer.utils");
+const { signToken } = require("../utils/token.utils");
 
 // controller to retrieve all users(admin)
 const getAllUsers = AsyncHandler(async (req, res, next) => {
@@ -76,23 +77,65 @@ const updatePassword = AsyncHandler(async (req, res, next) => {
   }
 });
 
-const createAdmin = AsyncHandler((req, res, next)=>{
+const createAdmin = AsyncHandler(async (req, res, next) => {
   try {
-
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
-const createConsultant = AsyncHandler((req, res, next)=>{
+const createConsultant = AsyncHandler(async (req, res, next) => {
   try {
-     q1p
-      const {fullName, email, phone, dateOfBirth} = req.body
-      // sendConsultantMail
+    const { fullName, email, phone, dateOfBirth } = req.body;
+
+    const findUser = await User.findOne({ email });
+    const findPhone = await User.findOne({ phone });
+    if (findUser || findPhone) {
+      throw new ForbiddenRequestError("User already exists");
+    }
+
+    const sanitizedUser = {
+      fullName,
+      email,
+      phone,
+      dateOfBirth,
+      role: 2,
+      status: "pending",
+      loginScheme: "email",
+    };
+
+    const user = await User.create(sanitizedUser);
+
+    const subject = "New Consultant At SereneVerse";
+    const template = "createConsultant";
+    const token = await signToken(user._id);
+    const link = `http://localhost:3000/auth/verify-consultant/${token}`;
+    // sendConsultantMail
+    response = await sendConsultantMail(
+      email,
+      subject,
+      template,
+      link,
+      fullName
+    );
+
+    return res.status(status.CREATED).json({
+      status: "success",
+      statusCode: status.CREATED,
+      data: sanitizedUser,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
+
+const deleteConsultant = AsyncHandler(async (req, res, next) => {
+  try {
+    const {id} = req.params
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 const updateProfile = AsyncHandler(async (req, res, next) => {
@@ -147,7 +190,7 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
       },
       { new: true }
     ).lean();
-    
+
     fs.unlinkSync(path);
 
     const sanitizedUser = {
@@ -169,25 +212,25 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
   }
 });
 
-const upload = AsyncHandler(async(req,res,next)=>{
+const upload = AsyncHandler(async (req, res, next) => {
   try {
     const uploader = (path) => cloudinaryUpload(path, "image");
     const file = req.file;
     const { path } = file;
-    const { url } = await uploader(path)
+    const { url } = await uploader(path);
     fs.unlinkSync(path);
 
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
-        url
+        url,
       },
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 const addExpertContact = AsyncHandler(async (req, res, next) => {
   try {
@@ -266,5 +309,6 @@ module.exports = {
   createAdmin,
   createConsultant,
   upload,
+  deleteConsultant,
   uploadProfileImage,
 };

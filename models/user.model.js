@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       enum: ["email", "google"],
     },
+    status : {
+      type : String,
+      default: "complete",
+      enum: ["complete", "pending"],
+    },
     expertsContacted: [
       {
         type: mongoose.Schema.Types.ObjectId,
