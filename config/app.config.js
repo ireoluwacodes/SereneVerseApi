@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("../middlewares/auth.google.middleware");
+const MongoStore = require("connect-mongo");
 
 const notFound = require("../middlewares/notfound.middleware");
 const errHandler = require("../middlewares/errhandler.middleware");
@@ -15,6 +16,15 @@ const { postRouter } = require("../routes/post.route");
 const { streakRouter } = require("../routes/streak.route");
 const { sessionSecret } = require("./constants.config");
 const session = require("express-session");
+const { nodeEnv, localMUrl, webMUrl } = require("./constants.config");
+
+const selectDb = () => {
+  if (nodeEnv == "production") {
+    return webMUrl;
+  } else {
+    return localMUrl;
+  }
+};
 
 const app = express();
 
@@ -27,7 +37,15 @@ app.use(
 );
 
 app.use(
-  session({ secret: sessionSecret, resave: true, saveUninitialized: true })
+  session({
+    secret: sessionSecret,
+    resave: true,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: selectDb(),
+      ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+    }),
+  })
 );
 
 // Initialize Passport
@@ -49,4 +67,4 @@ app.use("/chat", chatRouter);
 app.use(notFound);
 app.use(errHandler);
 
-module.exports = app
+module.exports = app;
