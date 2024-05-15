@@ -29,8 +29,9 @@ module.exports = (io, socket) => {
     socket.broadcast.emit("clearDeletedChats", { id });
   };
 
-  const disconnectEvent = () => {
+  const disconnectEvent = async () => {
     socket.broadcast.emit("currentlyOffline", { id });
+    await User.findByIdAndUpdate(id, { isOnline: false });
   };
 
   // initialize the socket events with the handlers

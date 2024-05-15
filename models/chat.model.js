@@ -15,6 +15,12 @@ const chatSchema = new Schema(
       type: String,
       required: true,
     },
+    date: {
+      type: Date,
+    },
+    senderProfile: {
+      type: String,
+    },
     status: {
       type: String,
       default: "active",
