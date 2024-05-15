@@ -70,7 +70,7 @@ const login = AsyncHandler(async (req, res, next) => {
 
     if (findUser.loginScheme !== "email")
       throw new UnauthorizedRequestError(
-        `Invalid login scheme - login with ${user.loginScheme}`
+        `Invalid login scheme - login with ${findUser.loginScheme}`
       );
 
     // compare the input password with the hash in the db
