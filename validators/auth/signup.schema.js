@@ -8,7 +8,7 @@ const createUserSchema = Joi.object({
     .required()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ["com", "ng", "net"] },
+      tlds: { allow: ["com", "ng", "net", "gov"] },
     }),
   dateOfBirth: Joi.date().required(),
   phone: Joi.string().required().min(11).max(14),
