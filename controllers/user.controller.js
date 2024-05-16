@@ -223,6 +223,7 @@ const upload = AsyncHandler(async (req, res, next) => {
   try {
     const uploader = (path) => cloudinaryUpload(path, "image");
     const file = req.file;
+    console.log("file", file)
     const { path } = file;
     const { url } = await uploader(path);
     fs.unlinkSync(path);
