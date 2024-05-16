@@ -4,9 +4,10 @@ const { nodeEnv } = require("../config/constants.config");
 
 const multerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    nodeEnv == "production"
-      ? cb(null, "/tmp")
-      : cb(null, path.join(__dirname, "../tmp"));
+    // nodeEnv == "production"
+    //   ? cb(null, "/tmp")
+    //   : cb(null, path.join(__dirname, "../tmp"));
+    cb(null, "/tmp")
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
