@@ -9,6 +9,7 @@ const { User } = require("../models/user.model");
 const { cloudinaryUpload } = require("../config/cloudinary.config");
 const { sendConsultantMail } = require("../utils/mailer.utils");
 const { signToken } = require("../utils/token.utils");
+const BadRequestError = require("../exceptions/badRequest.exception");
 
 // controller to retrieve all users(admin)
 const getAllUsers = AsyncHandler(async (req, res, next) => {
@@ -223,7 +224,10 @@ const upload = AsyncHandler(async (req, res, next) => {
   try {
     const uploader = (path) => cloudinaryUpload(path, "image");
     const file = req.file;
-    console.log("file", file)
+    if (!file) {
+      console.log("file", file);
+      throw new BadRequestError("File not found : Error uploading");
+    }
     const { path } = file;
     const { url } = await uploader(path);
     fs.unlinkSync(path);

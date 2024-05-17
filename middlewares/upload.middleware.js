@@ -7,7 +7,7 @@ const multerStorage = multer.diskStorage({
     // nodeEnv == "production"
     //   ? cb(null, "/tmp")
     //   : cb(null, path.join(__dirname, "../tmp"));
-    cb(null, "/tmp")
+    cb(null, "/tmp/")
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
