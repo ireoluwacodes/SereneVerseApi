@@ -187,19 +187,29 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     await validateDbId(userId);
+
     const uploader = (path) => cloudinaryUpload(path, "image");
-    const file = req.file;
-    const { path } = file;
-    const { url } = await uploader(path);
+
+    const files = req.files;
+    if (files.length < 1) {
+      throw new BadRequestError("File not found : Error uploading");
+    }
+
+  const urls = [];
+    for (const file of files) {
+      const { path } = file;
+      const newPath = await uploader(path);
+      urls.push(newPath);
+      fs.unlinkSync(path);
+    }
+
     const user = await User.findByIdAndUpdate(
       userId,
       {
-        displayImage: url,
+        displayImage: urls[0].url,
       },
       { new: true }
     ).lean();
-
-    fs.unlinkSync(path);
 
     const sanitizedUser = {
       ...user,
@@ -225,7 +235,6 @@ const upload = AsyncHandler(async (req, res, next) => {
     const uploader = (path) => cloudinaryUpload(path, "image");
     const files = req.files;
     if (files.length < 1) {
-      console.log("file", file);
       throw new BadRequestError("File not found : Error uploading");
     }
     const urls = [];
@@ -238,9 +247,7 @@ const upload = AsyncHandler(async (req, res, next) => {
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
-      data: {
-        url : urls[0],
-      },
+      data: urls[0],
     });
   } catch (error) {
     next(error);

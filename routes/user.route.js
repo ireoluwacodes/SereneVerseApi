@@ -46,7 +46,7 @@ userRouter
 
 userRouter
   .route("/upload")
-  .post(authMiddleware, uploadPhoto.single("image"), uploadProfileImage);
+  .post(authMiddleware, uploadPhoto.array("images", 1), uploadProfileImage);
 
 userRouter
   .route("/admin/upload")
