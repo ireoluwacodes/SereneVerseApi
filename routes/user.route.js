@@ -50,7 +50,7 @@ userRouter
 
 userRouter
   .route("/admin/upload")
-  .post(authMiddleware, isAdmin, uploadPhoto.single("image"), upload);
+  .post(authMiddleware, isAdmin, uploadPhoto.array("images", 1), upload);
 
 userRouter
   .route("/edit-profile")

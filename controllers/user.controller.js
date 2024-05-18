@@ -223,20 +223,23 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
 const upload = AsyncHandler(async (req, res, next) => {
   try {
     const uploader = (path) => cloudinaryUpload(path, "image");
-    const file = req.file;
-    if (!file) {
+    const files = req.files;
+    if (files.length < 1) {
       console.log("file", file);
       throw new BadRequestError("File not found : Error uploading");
     }
-    const { path } = file;
-    const { url } = await uploader(path);
-    fs.unlinkSync(path);
-
+    const urls = [];
+    for (const file of files) {
+      const { path } = file;
+      const newPath = await uploader(path);
+      urls.push(newPath);
+      fs.unlinkSync(path);
+    }
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
-        url,
+        url : urls[0],
       },
     });
   } catch (error) {
