@@ -31,18 +31,19 @@ startApp(PORT).then(() => {
   });
 
   // add authentication middleware
-  io.use(async(socket, next) => {
-    const isVerified = await socketAuthMiddleware(socket)
-    if (isVerified) {
-      console.log("socket authenticated");
-      next();
-    } else {
-      next(new Error("invalid request, add token and id fields in auth header"));
-    }
-  });
+  // io.use(async(socket, next) => {
+  //   const isVerified = await socketAuthMiddleware(socket)
+  //   if (isVerified) {
+  //     console.log("socket authenticated");
+  //     next();
+  //   } else {
+  //     next(new Error("invalid request, add token and id fields in auth header"));
+  //   }
+  // });
 
   // connection handler
   const onConnection = (socket) => {
+    console.log(socket)
     registerChatHandlers(io, socket);
   };
 
