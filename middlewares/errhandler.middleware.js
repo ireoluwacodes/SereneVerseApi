@@ -4,6 +4,7 @@ const BadRequestError = require("../exceptions/badRequest.exception");
 const ResourceNotFoundError = require("../exceptions/notFound.exception");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const { MongooseError } = require("mongoose");
+const { UNAUTHORIZED } = require("http-status");
 
 const errHandler = (error, req, res, next) => {
   let statuscode = res.statusCode == 200 ? 500 : res.statusCode;
@@ -13,6 +14,7 @@ const errHandler = (error, req, res, next) => {
     message = error.message;
   }
   if (error instanceof JsonWebTokenError) {
+    statuscode = UNAUTHORIZED
     message = error.message;
     type = "JWT Error or JWT Expired error";
   }
