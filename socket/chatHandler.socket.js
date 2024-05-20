@@ -3,7 +3,7 @@ const { User } = require("../models/user.model");
 
 module.exports = async(io, socket) => {
   const id = socket.handshake.auth.id;
-
+  console.log("A new socket connected with user-id", id)
   //   write the socket event handlers
 
   const updateOnlineStatus = async () => {
