@@ -116,9 +116,9 @@ module.exports.updateDailyPost = AsyncHandler(async (req, res, next) => {
     const { userId } = req;
     const { id } = req.params;
     await validateDbId(userId, id);
-    const { content } = req.body;
+    const { title, content } = req.body;
 
-    const post = await Post.findByIdAndUpdate(id, { content }, { new: true });
+    const post = await Post.findByIdAndUpdate(id, { content, title }, { new: true });
 
     return res.status(status.OK).json({
       status: "success",

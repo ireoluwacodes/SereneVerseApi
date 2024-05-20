@@ -11,14 +11,19 @@ module.exports.addNewResource = AsyncHandler(async (req, res, next) => {
     await validateDbId(userId);
     const { articles, videos } = req.body;
 
-    const typedArticles = articles.map(article =>{
-      article.type = "article"
-    })
+    const typedArticles = articles.map((article) => {
+      article.type = "article";
+      article.postedBy = userId;
+      article.datePosted = new Date(Date.now());
+    });
 
-    const typedVideos = videos.map(video =>{
-      video.type = "video"
-    })
-    const newResources = [...typedArticles,...typedVideos]
+    const typedVideos = videos.map((video) => {
+      video.type = "video";
+      video.postedBy = userId;
+      video.datePosted = new Date(Date.now());
+    });
+    const newResources = [...typedArticles, ...typedVideos];
+    console.log(newResources);
 
     const resources = await Resource.create(newResources);
 
