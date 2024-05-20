@@ -1,9 +1,9 @@
 const { Chat } = require("../models/chat.model");
 const { User } = require("../models/user.model");
 
-module.exports = async(io, socket) => {
-  const id = socket.handshake.auth.id;
-  console.log("A new socket connected with user-id", id)
+module.exports = (io, socket) => {
+  const id = socket.handshake.headers.id;
+  console.log("A new socket connected", id);
   //   write the socket event handlers
 
   const updateOnlineStatus = async () => {
@@ -36,7 +36,7 @@ module.exports = async(io, socket) => {
 
   // initialize the socket events with the handlers
 
-  await updateOnlineStatus();
+  updateOnlineStatus();
 
   socket.on("chats:new", handleNewChats);
 

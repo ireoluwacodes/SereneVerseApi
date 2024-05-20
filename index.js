@@ -24,27 +24,25 @@ const startApp = async (port) => {
 startApp(PORT).then(() => {
   const io = new Server(server, {
     cors: {
-      // origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
-      origin: "*",
+      origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
       methods: ["POST, GET, PUT, PATCH, DELETE"],
-      credentials: false,
+      credentials: true,
     },
   });
 
   // add authentication middleware
-  // io.use(async(socket, next) => {
-  //   const isVerified = await socketAuthMiddleware(socket)
-  //   if (isVerified) {
-  //     console.log("socket authenticated");
-  //     next();
-  //   } else {
-  //     next(new Error("invalid request, add token and id fields in auth header"));
-  //   }
-  // });
+  io.use(async(socket, next) => {
+    const isVerified = await socketAuthMiddleware(socket)
+    if (isVerified) {
+      console.log("socket authenticated");
+      next();
+    } else {
+      next(new Error("invalid request, add token and id fields in auth header"));
+    }
+  });
 
   // connection handler
   const onConnection = (socket) => {
-    console.log(socket)
     registerChatHandlers(io, socket);
   };
 
