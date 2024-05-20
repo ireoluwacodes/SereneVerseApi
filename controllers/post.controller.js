@@ -49,7 +49,10 @@ module.exports.createComment = AsyncHandler(async (req, res, next) => {
         },
       },
       { new: true }
-    );
+    ).populate({
+      path: "comments.madeBy",
+      select: "fullName email displayImage isOnline",
+    });
 
     return res.status(status.OK).json({
       status: "success",
@@ -80,7 +83,10 @@ module.exports.deleteComment = AsyncHandler(async (req, res, next) => {
         },
       },
       { new: true }
-    );
+    ).populate({
+      path: "comments.madeBy",
+      select: "fullName email displayImage isOnline",
+    });
 
     return res.status(status.OK).json({
       status: "success",
@@ -122,7 +128,12 @@ module.exports.updateDailyPost = AsyncHandler(async (req, res, next) => {
       id,
       { content, title, url },
       { new: true }
-    ).lean();
+    )
+      .populate({
+        path: "comments.madeBy",
+        select: "fullName email displayImage isOnline",
+      })
+      .lean();
 
     return res.status(status.OK).json({
       status: "success",
@@ -160,13 +171,16 @@ module.exports.getTodayPost = AsyncHandler(async (req, res, next) => {
     const { userId } = req;
     await validateDbId(userId);
 
-    const post = await Post.find({});
+    const post = await Post.findOne().sort({ createdAt: -1 }).populate({
+      path: "comments.madeBy",
+      select: "fullName email displayImage isOnline",
+    });
 
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
-        post: post[0],
+        post,
       },
     });
   } catch (error) {
