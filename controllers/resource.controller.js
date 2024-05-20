@@ -15,15 +15,15 @@ module.exports.addNewResource = AsyncHandler(async (req, res, next) => {
       ...article,
       type: "article",
       postedBy: userId,
-      datePosted: new Date(Date.now())
-  }));
+      datePosted: new Date(Date.now()),
+    }));
 
-  const typedVideos = videos.map((video) => ({
-    ...video,
-    type: "video",
-    postedBy: userId,
-    datePosted: new Date(Date.now())
-}));
+    const typedVideos = videos.map((video) => ({
+      ...video,
+      type: "video",
+      postedBy: userId,
+      datePosted: new Date(Date.now()),
+    }));
 
     const newResources = [...typedArticles, ...typedVideos];
 
@@ -90,13 +90,13 @@ module.exports.deleteResource = AsyncHandler(async (req, res, next) => {
 
 module.exports.updateResource = AsyncHandler(async (req, res, next) => {
   try {
-    const { content } = req.body;
+    const { author, description, link } = req.body;
     const { id } = req.params;
     await validateDbId(id);
 
     const resource = await Resource.findByIdAndUpdate(
       id,
-      { content },
+      { author, description, link },
       { new: true }
     );
     return res.status(status.OK).json({
