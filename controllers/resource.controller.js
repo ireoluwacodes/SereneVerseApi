@@ -26,7 +26,6 @@ module.exports.addNewResource = AsyncHandler(async (req, res, next) => {
 }));
 
     const newResources = [...typedArticles, ...typedVideos];
-    console.log(newResources);
 
     const resources = await Resource.create(newResources);
 
