@@ -19,6 +19,9 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
+    url: {
+      type: String,
+    },
     comments: [
       {
         comment: String,

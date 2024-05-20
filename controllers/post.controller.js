@@ -9,11 +9,12 @@ module.exports.createDailyPost = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
     await validateDbId(userId);
-    const { title, content} = req.body;
+    const { title, content, url } = req.body;
 
     const post = await Post.create({
       postedBy: userId,
       title,
+      url,
       datePosted: new Date(Date.now()),
       content,
     });
@@ -115,9 +116,13 @@ module.exports.updateDailyPost = AsyncHandler(async (req, res, next) => {
     const { userId } = req;
     const { id } = req.params;
     await validateDbId(userId, id);
-    const { title, content } = req.body;
+    const { title, content, url } = req.body;
 
-    const post = await Post.findByIdAndUpdate(id, { content, title }, { new: true });
+    const post = await Post.findByIdAndUpdate(
+      id,
+      { content, title, url },
+      { new: true }
+    ).lean();
 
     return res.status(status.OK).json({
       status: "success",
@@ -161,7 +166,7 @@ module.exports.getTodayPost = AsyncHandler(async (req, res, next) => {
       status: "success",
       statusCode: status.OK,
       data: {
-        post : post[0],
+        post: post[0],
       },
     });
   } catch (error) {
