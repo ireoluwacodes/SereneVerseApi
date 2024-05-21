@@ -16,11 +16,16 @@ const createChat = AsyncHandler(async (req, res, next) => {
       sentAt,
       date
     });
+
+    const myChat = await Chat.findById(chat._id).populate({
+      path : "senderId",
+      select : "fullName displayImage isOnline"
+    })
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
-        chat,
+        chat : myChat,
       },
     });
   } catch (error) {
