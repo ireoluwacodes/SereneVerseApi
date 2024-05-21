@@ -2,7 +2,7 @@ const { Chat } = require("../models/chat.model");
 const { User } = require("../models/user.model");
 
 module.exports = (io, socket) => {
-  const id = socket.handshake.headers.id;
+  const id = socket.handshake.auth.id;
   console.log("A new socket connected", id);
   //   write the socket event handlers
 
