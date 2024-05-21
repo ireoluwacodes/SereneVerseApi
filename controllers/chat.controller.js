@@ -5,7 +5,7 @@ const status = require("http-status");
 
 const createChat = AsyncHandler(async (req, res, next) => {
   try {
-    const { senderId, receiverId, message, senderProfile, date } = req.body;
+    const { senderId, receiverId, message, senderProfile, sentAt, date } = req.body;
     await validateDbId(senderId, receiverId);
 
     const chat = await Chat.create({
@@ -13,6 +13,7 @@ const createChat = AsyncHandler(async (req, res, next) => {
       receiverId,
       message,
       senderProfile,
+      sentAt,
       date
     });
     return res.status(status.OK).json({
