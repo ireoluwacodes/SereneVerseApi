@@ -14,12 +14,16 @@ module.exports = (io, socket) => {
   const handleNewChats = (data) => {
     socket.broadcast.emit("loadNewChats", data);
   };
+  
   const loadOldChats = async (data) => {
     const chats = await Chat.find({
       $or: [
         { senderId: data.sender_id, receiverId: data.receiver_id },
         { senderId: data.receiver_id, receiverId: data.sender_id },
       ],
+    }).populate({
+      path: "senderId",
+      select: "fullName displayImage isOnline",
     });
 
     socket.broadcast.emit("loadOldChats", { chats: chats });

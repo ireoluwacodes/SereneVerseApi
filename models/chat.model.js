@@ -18,6 +18,10 @@ const chatSchema = new Schema(
     date: {
       type: Date,
     },
+    sentAt: {
+      type: String,
+      default: "00:00",
+    },
     senderProfile: {
       type: String,
     },
