@@ -5,7 +5,8 @@ const status = require("http-status");
 
 const createChat = AsyncHandler(async (req, res, next) => {
   try {
-    const { senderId, receiverId, message, senderProfile, sentAt, date } = req.body;
+    const { senderId, receiverId, message, senderProfile, sentAt, date } =
+      req.body;
     await validateDbId(senderId, receiverId);
 
     const chat = await Chat.create({
@@ -14,18 +15,18 @@ const createChat = AsyncHandler(async (req, res, next) => {
       message,
       senderProfile,
       sentAt,
-      date
+      date,
     });
 
     const myChat = await Chat.findById(chat._id).populate({
-      path : "senderId",
-      select : "fullName displayImage isOnline email phone role"
-    })
+      path: "senderId",
+      select: "fullName displayImage isOnline email phone role",
+    });
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       data: {
-        chat : myChat,
+        chat: myChat,
       },
     });
   } catch (error) {
@@ -59,7 +60,34 @@ const deleteChat = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const loadOldChats = AsyncHandler(async (req, res, next) => {
+ try {
+  const { senderId, receiverId } = req.params;
+
+  const chats = await Chat.find({
+    $or: [
+      { senderId, receiverId },
+      { senderId: receiverId, receiverId: senderId },
+    ],
+  }).populate({
+    path: "senderId",
+    select: "fullName displayImage isOnline email phone role",
+  });
+  
+  return res.status(status.OK).json({
+    status: "success",
+    statusCode: status.OK,
+    data: {
+      chats
+    },
+  });
+ } catch (error) {
+    next(error)
+ }
+});
+
 module.exports = {
   createChat,
   deleteChat,
+  loadOldChats
 };
