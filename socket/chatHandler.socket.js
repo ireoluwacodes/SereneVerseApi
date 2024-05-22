@@ -23,7 +23,7 @@ module.exports = (io, socket) => {
       ],
     }).populate({
       path: "senderId",
-      select: "fullName displayImage isOnline",
+      select: "fullName displayImage isOnline email phone role",
     });
 
     socket.broadcast.emit("loadOldChats", { chats: chats });
