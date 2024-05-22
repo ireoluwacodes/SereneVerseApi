@@ -303,6 +303,22 @@ const getExpertContact = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const getAllPatients = AsyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const patientArr = await User.find({ role: 3 });
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      data: {
+        patientArr,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 const getContactHistory = AsyncHandler(async (req, res, next) => {
   try {
     const id = req.userId;
@@ -323,6 +339,7 @@ const getContactHistory = AsyncHandler(async (req, res, next) => {
 
 module.exports = {
   getAllUsers,
+  getAllPatients,
   updateProfile,
   updatePassword,
   getExpertContact,

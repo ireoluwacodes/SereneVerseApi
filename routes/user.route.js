@@ -12,10 +12,11 @@ const {
   createConsultant,
   upload,
   deleteConsultant,
+  getAllPatients,
 } = require("../controllers/user.controller");
 const validator = require("../middlewares/validator.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
-const isAdmin = require("../middlewares/isAdmin.middleware");
+const { isAdmin, isConsultant } = require("../middlewares/isAdmin.middleware");
 const { updatePassSchema } = require("../validators/auth/updatePass.schema");
 const { uploadPhoto } = require("../middlewares/upload.middleware");
 const { editProfileSchema } = require("../validators/auth/editProfile.schema");
@@ -63,6 +64,8 @@ userRouter
   .get(authMiddleware, addExpertContact);
 
 userRouter.route("/").get(authMiddleware, isAdmin, getAllUsers);
+
+userRouter.route("/patient").get(authMiddleware, isConsultant, getAllPatients);
 
 userRouter.route("/consult").get(authMiddleware, getExpertContact);
 
