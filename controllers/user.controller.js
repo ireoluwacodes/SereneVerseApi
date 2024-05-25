@@ -291,7 +291,7 @@ const addExpertContact = AsyncHandler(async (req, res, next) => {
 const getExpertContact = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
-    const expertArr = await User.find({ role: 2 });
+    const expertArr = await User.find({ role: 2, status: "complete" });
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
@@ -343,7 +343,9 @@ const getUsersContacted = AsyncHandler(async (req, res, next) => {
     const { userId } = req;
     await validateDbId(userId);
 
-    const usersContacted = await User.find({ expertsContacted: { $in: [userId] } });
+    const usersContacted = await User.find({
+      expertsContacted: { $in: [userId] },
+    });
 
     return res.status(status.OK).json({
       status: "success",
