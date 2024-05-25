@@ -142,7 +142,7 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
 
 const verifyConsultant = AsyncHandler(async (req, res, next) => {
   try {
-    const { token } = req.params;
+    const token = req.params.token;
     if (!token) throw new ForbiddenRequestError("Invalid Parameters");
 
     const id = await verifyToken(token);
@@ -302,25 +302,22 @@ const refresh = AsyncHandler(async (req, res, next) => {
 // controller to log out a user session
 const logOut = AsyncHandler(async (req, res, next) => {
   try {
-    const { refresh_token } = req.cookies;
+    const refresh_token = req.cookies.refresh_token;
 
     const userId = req.userId;
 
     const user = await User.findById(userId);
 
-    if (!user || !refresh_token || user.refreshToken != refresh_token) {
-      // clears cookie from user browser and logs user out
-      res.clearCookie("refresh_token", {
-        httpOnly: true,
-        secure: true,
-      });
+    // if (!user || !refresh_token || user.refreshToken != refresh_token) {
+    //   // clears cookie from user browser and logs user out
+    //   res.clearCookie("refresh_token", {
+    //     httpOnly: true,
+    //     secure: true,
+    //   });
 
-      user.refreshToken = undefined;
-      await user.save();
-      throw new ForbiddenRequestError(
-        "Invalid User Signed Out - no refresh token - invalid refresh token - user not found"
-      );
-    }
+    //   user.refreshToken = undefined;
+    //   await user.save();
+    // }
 
     res.clearCookie("refresh_token", {
       httpOnly: true,
