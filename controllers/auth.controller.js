@@ -18,7 +18,8 @@ const register = AsyncHandler(async (req, res, next) => {
   // wrap all logic in a try-catch block for error handling
   try {
     // destructure the values needed from the request body
-    const { fullName, userName, password, phone, email, dateOfBirth, role } = req.body;
+    const { fullName, userName, password, phone, email, dateOfBirth, role } =
+      req.body;
 
     // checks if any of the users essentials exist in the db
     const findUser = await User.findOne({ email });
@@ -322,6 +323,8 @@ const logOut = AsyncHandler(async (req, res, next) => {
     res.clearCookie("refresh_token", {
       httpOnly: true,
       secure: true,
+      maxAge: 96 * 60 * 60 * 1000,
+      sameSite: "none",
     });
 
     user.refreshToken = undefined;
