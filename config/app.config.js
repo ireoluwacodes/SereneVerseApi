@@ -30,7 +30,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+      origin: ["https://serene-verse.vercel.app"],
     methods: ["POST, GET, PUT, PATCH, DELETE"],
     credentials: true,
   })
