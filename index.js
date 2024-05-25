@@ -24,7 +24,8 @@ const startApp = async (port) => {
 startApp(PORT).then(() => {
   const io = new Server(server, {
     cors: {
-      origin: ["https://serene-verse.vercel.app"],
+      origin: ["http://localhost:3000"],
+      // origin: ["https://serene-verse.vercel.app"],
       methods: ["POST, GET, PUT, PATCH, DELETE"],
       credentials: true,
     },
