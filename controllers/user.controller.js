@@ -160,7 +160,7 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
         dateOfBirth,
         fullName,
         phone,
-        userName
+        userName,
       },
       { new: true }
     ).lean();
@@ -196,7 +196,7 @@ const uploadProfileImage = AsyncHandler(async (req, res, next) => {
       throw new BadRequestError("File not found : Error uploading");
     }
 
-  const urls = [];
+    const urls = [];
     for (const file of files) {
       const { path } = file;
       const newPath = await uploader(path);
@@ -338,8 +338,28 @@ const getContactHistory = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const getUsersContacted = AsyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req;
+    await validateDbId(userId);
+
+    const usersContacted = await User.find({ expertsContacted: { $in: [userId] } });
+
+    return res.status(status.OK).json({
+      status: "success",
+      statusCode: status.OK,
+      data: {
+        usersContacted,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = {
   getAllUsers,
+  getUsersContacted,
   getAllPatients,
   updateProfile,
   updatePassword,
