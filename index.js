@@ -24,7 +24,7 @@ const startApp = async (port) => {
 startApp(PORT).then(() => {
   const io = new Server(server, {
     cors: {
-    origin: ["http://localhost:3000"],
+      origin: ["http://localhost:3000"],
       methods: ["POST, GET, PUT, PATCH, DELETE"],
       credentials: true,
     },
@@ -51,7 +51,7 @@ startApp(PORT).then(() => {
   io.on("connect", onConnection);
 });
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("0 8 * * *", async () => {
   console.log("sobriety tracker running");
   await Streak.aggregate([
     {
