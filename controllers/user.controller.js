@@ -152,7 +152,7 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
     await validateDbId(id);
 
     // destructure values from request body
-    const { dateOfBirth, fullName, phone } = req.body;
+    const { dateOfBirth, fullName, phone, userName } = req.body;
 
     const user = await User.findByIdAndUpdate(
       id,
@@ -160,6 +160,7 @@ const updateProfile = AsyncHandler(async (req, res, next) => {
         dateOfBirth,
         fullName,
         phone,
+        userName
       },
       { new: true }
     ).lean();

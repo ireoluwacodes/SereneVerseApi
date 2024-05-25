@@ -18,7 +18,7 @@ const register = AsyncHandler(async (req, res, next) => {
   // wrap all logic in a try-catch block for error handling
   try {
     // destructure the values needed from the request body
-    const { fullName, password, phone, email, dateOfBirth, role } = req.body;
+    const { fullName, userName, password, phone, email, dateOfBirth, role } = req.body;
 
     // checks if any of the users essentials exist in the db
     const findUser = await User.findOne({ email });
@@ -36,6 +36,7 @@ const register = AsyncHandler(async (req, res, next) => {
       fullName,
       hash,
       phone,
+      userName,
       email,
       role,
       loginScheme: "email",
