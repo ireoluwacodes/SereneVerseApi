@@ -43,11 +43,11 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
     const streak = await Streak.findById(id);
 
     if (
-      new Date(streak.lastUpdated).getMilliseconds() + 24 * 60 * 60 * 1000 <=
+      new Date(streak.lastUpdated).getTime() + 24 * 60 * 60 * 1000 <=
       Date.now()
     ) {
       streak.currentStreak = streak.currentStreak + 1;
-      streak.lastUpdated = new Date();
+      streak.lastUpdated = Date.now();
       await streak.save();
     }
     return res.status(status.OK).json({

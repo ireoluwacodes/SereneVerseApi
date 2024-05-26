@@ -26,6 +26,7 @@ const streakSchema = new Schema(
     },
     lastUpdated : {
       type: Date,
+      default: Date.now(),
     }
   },
   { timestamps: true }

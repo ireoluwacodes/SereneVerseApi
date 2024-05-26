@@ -115,7 +115,7 @@ const login = AsyncHandler(async (req, res, next) => {
 
 const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   try {
-    const { user } = req;
+    const user = req.user;
     // sign access and refresh token to keep a user logged in
     const accessToken = await signToken(user._id);
     const refreshToken = await signRefreshToken(user._id);
@@ -144,6 +144,7 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
 const verifyConsultant = AsyncHandler(async (req, res, next) => {
   try {
     const token = req.params.token;
+    
     if (!token) throw new ForbiddenRequestError("Invalid Parameters");
 
     const id = await verifyToken(token);

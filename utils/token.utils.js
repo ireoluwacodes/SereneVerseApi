@@ -11,7 +11,7 @@ const signToken = async (id) => {
     });
     return token;
   } catch (error) {
-    throw new Error(error);
+    throw new jwt.JsonWebTokenError(error);
   }
 };
 
@@ -20,7 +20,7 @@ const verifyToken = async (token) => {
     let payload = jwt.verify(token, secret);
     return payload.id;
   } catch (error) {
-    throw new Error(error);
+    throw new jwt.JsonWebTokenError(error);
   }
 };
 
@@ -34,7 +34,7 @@ const signRefreshToken = async (id) => {
     });
     return token;
   } catch (error) {
-    throw new Error(error);
+    throw new jwt.JsonWebTokenError(error);
   }
 };
 
