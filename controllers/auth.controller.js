@@ -283,6 +283,7 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
     if(req.user){
+      console.log("here")
       const user = req.user;
       const accessToken = await signToken(user._id);
       return res.status(status.OK).json({
@@ -292,6 +293,7 @@ const refresh = AsyncHandler(async (req, res, next) => {
         token: accessToken,
       });
     }
+    console.log("not here")
     // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
     const { refresh_token } = req.cookies;
 

@@ -45,7 +45,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, { id: user._id }); // Store user ID in session
+  done(null, user._id); // Store user ID in session
 });
 
 passport.deserializeUser(async (id, done) => {
