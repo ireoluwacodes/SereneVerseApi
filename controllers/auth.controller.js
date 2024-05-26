@@ -282,8 +282,8 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 // controller to refresh the logged in user and renew access token
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
-    console.log("one", req.user)
-    console.log("two", req.passport.session.user)
+    console.log("user", req.user)
+    console.log("session", req.session)
     if(req.user){
       console.log("here")
       const user = req.user;
@@ -295,7 +295,6 @@ const refresh = AsyncHandler(async (req, res, next) => {
         token: accessToken,
       });
     }
-    console.log("not here")
     // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
     const { refresh_token } = req.cookies;
 

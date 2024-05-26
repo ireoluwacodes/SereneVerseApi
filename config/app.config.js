@@ -40,18 +40,33 @@ app.use(
 app.use(
   session({
     secret: sessionSecret,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: selectDb(),
       ttl: 4 * 24 * 60 * 60, // = 4 days.
     }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 96,
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    }
   })
 );
 
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user); // Store user in session
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
