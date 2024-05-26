@@ -15,7 +15,6 @@ passport.use(
       clientID: googleClientId,
       clientSecret: googleClientSecret,
       callbackURL: googleClientRedirect,
-      state: true,
     },
     async function (accessToken, refreshToken, profile, cb) {
       try {
