@@ -48,7 +48,7 @@ passport.serializeUser((user, done) => {
   done(null, user); // Store user in session
 });
 
-passport.deserializeUser(async (user, done) => {
+passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
