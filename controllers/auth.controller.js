@@ -116,6 +116,8 @@ const login = AsyncHandler(async (req, res, next) => {
 const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   try {
     const user = req.user;
+    req.session.userId = user._id;
+    req.session.save();
     // sign access and refresh token to keep a user logged in
     const accessToken = await signToken(user._id);
 
@@ -282,13 +284,19 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 // controller to refresh the logged in user and renew access token
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
-    if(req.user){
-      const user = req.user;
+    if (req.session.userId) {
+      const user = await User.findById(req.session.userId);
+
+      if (!user)
+        throw new ForbiddenRequestError(
+          "User not Found - invalid refresh token"
+        );
+
       const accessToken = await signToken(user._id);
       return res.status(status.OK).json({
         status: "success",
         statusCode: status.OK,
-        data : user,
+        data: user,
         token: accessToken,
       });
     }
@@ -328,10 +336,10 @@ const logOut = AsyncHandler(async (req, res, next) => {
     const { refresh_token } = req.cookies;
     const userId = req.userId;
 
-    if(req.isAuthenticated()){
-      req.logout()
-      req.session.destroy()
-      res.clearCookie("connect.sid", {path: "/"})
+    if (req.isAuthenticated() || req.session.userId) {
+      req.logout();
+      req.session.destroy();
+      res.clearCookie("connect.sid", { path: "/" });
       return res.sendStatus(status.NO_CONTENT);
     }
 

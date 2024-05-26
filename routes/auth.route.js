@@ -39,7 +39,7 @@ authRouter
   .route("/password/forgot")
   .post(validator(checkEmailSchema), forgotPassword);
 
-authRouter.route("/refresh").get(passport.authenticate("session"), refresh);
+authRouter.route("/refresh").get(refresh);
 
 authRouter
   .route("/password/reset")
