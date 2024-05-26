@@ -117,7 +117,11 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   try {
     const user = req.user;
     req.session.userId = user._id;
-
+    req.session.save((err) => {
+      if (err) {
+        console.log("err", err);
+      }
+    });
     // sign access and refresh token to keep a user logged in
     const accessToken = await signToken(user._id);
 
