@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const passport = require("../middlewares/auth.google.middleware");
+const passport = require("passport")
 const MongoStore = require("connect-mongo");
 
 const notFound = require("../middlewares/notfound.middleware");
@@ -31,15 +31,17 @@ const app = express();
 
 app.use(
   cors({
-          // origin: ["http://localhost:3000"],
-      origin: ["https://serene-verse.vercel.app"],
+    // origin: ["http://localhost:3000"],
+    origin: ["https://serene-verse.vercel.app"],
     methods: ["POST, GET, PUT, PATCH, DELETE"],
     credentials: true,
   })
 );
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 app.use(cookieParser());
-
 app.use(
   session({
     secret: sessionSecret,
@@ -54,29 +56,14 @@ app.use(
       httpOnly: true,
       secure: true,
       sameSite: "none",
-    }
+    },
   })
 );
 
-app.use(passport.authenticate('session'));
-
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
-
 // Initialize Passport
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser((user, done) => {
-  done(null, user); // Store user in session
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
-
+app.use(passport.authenticate("session"));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(router);
 app.use("/auth", authRouter);

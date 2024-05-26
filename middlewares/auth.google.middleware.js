@@ -44,4 +44,14 @@ passport.use(
   )
 );
 
+passport.serializeUser((user, done) => {
+  console.log("serialize", user)
+  done(null, user); // Store user in session
+});
+
+passport.deserializeUser((user, done) => {
+  console.log("deserialize", user)
+  done(null, user);
+});
+
 module.exports = passport;
