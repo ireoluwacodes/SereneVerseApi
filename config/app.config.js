@@ -46,7 +46,7 @@ app.use(
   session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: selectDb(),
       ttl: 4 * 24 * 60 * 60, // = 4 days.
