@@ -31,7 +31,7 @@ authRouter
 
 authRouter
   .route("/google/callback")
-  .get(passport.authenticate("google", { session: true }), handleGoogleAuth);
+  .get(passport.authenticate("google", { session: false }), handleGoogleAuth);
 
 authRouter.route("/verify-expert/:token").get(verifyConsultant);
 
