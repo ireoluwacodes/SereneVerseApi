@@ -44,7 +44,7 @@ app.use(
   session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: selectDb(),
       ttl: 4 * 24 * 60 * 60, // = 4 days.
@@ -57,6 +57,9 @@ app.use(
     }
   })
 );
+
+app.use(passport.authenticate('session'));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
