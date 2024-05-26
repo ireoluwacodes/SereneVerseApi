@@ -282,6 +282,7 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 // controller to refresh the logged in user and renew access token
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
+    console.log("user", req.session.passport.user)
     if(req.user){
       const user = req.user;
       const accessToken = await signToken(user._id);
