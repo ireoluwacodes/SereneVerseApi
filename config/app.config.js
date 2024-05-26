@@ -17,6 +17,7 @@ const { streakRouter } = require("../routes/streak.route");
 const { sessionSecret } = require("./constants.config");
 const session = require("express-session");
 const { nodeEnv, localMUrl, webMUrl } = require("./constants.config");
+const { User } = require("../models/user.model");
 
 const selectDb = () => {
   if (nodeEnv == "production") {
