@@ -37,6 +37,8 @@ app.use(
   })
 );
 
+app.use(cookieParser());
+
 app.use(
   session({
     secret: sessionSecret,
@@ -55,6 +57,10 @@ app.use(
   })
 );
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -67,10 +73,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(morgan("dev"));
 
 app.use(router);
 app.use("/auth", authRouter);
