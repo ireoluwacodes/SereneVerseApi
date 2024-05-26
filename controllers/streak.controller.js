@@ -41,9 +41,15 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
     await validateDbId(userId, id);
 
     const streak = await Streak.findById(id);
-    streak.currentStreak = streak.currentStreak + 1;
-    streak.lastUpdated = new Date();
-    await streak.save();
+
+    if (
+      new Date(streak.lastUpdated).getMilliseconds() + 24 * 60 * 60 * 1000 <=
+      Date.now()
+    ) {
+      streak.currentStreak = streak.currentStreak + 1;
+      streak.lastUpdated = new Date();
+      await streak.save();
+    }
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,

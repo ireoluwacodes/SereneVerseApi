@@ -51,7 +51,7 @@ module.exports.createComment = AsyncHandler(async (req, res, next) => {
       { new: true }
     ).populate({
       path: "comments.madeBy",
-      select: "fullName email displayImage isOnline",
+      select: "userName fullName email displayImage isOnline",
     });
 
     return res.status(status.OK).json({
@@ -85,7 +85,7 @@ module.exports.deleteComment = AsyncHandler(async (req, res, next) => {
       { new: true }
     ).populate({
       path: "comments.madeBy",
-      select: "fullName email displayImage isOnline",
+      select: "userName fullName email displayImage isOnline",
     });
 
     return res.status(status.OK).json({
@@ -131,7 +131,7 @@ module.exports.updateDailyPost = AsyncHandler(async (req, res, next) => {
     )
       .populate({
         path: "comments.madeBy",
-        select: "fullName email displayImage isOnline",
+        select: "userName fullName email displayImage isOnline",
       })
       .lean();
 
@@ -173,7 +173,7 @@ module.exports.getTodayPost = AsyncHandler(async (req, res, next) => {
 
     const post = await Post.findOne().sort({ createdAt: -1 }).populate({
       path: "comments.madeBy",
-      select: "fullName email displayImage isOnline",
+      select: "userName fullName email displayImage isOnline",
     });
 
     return res.status(status.OK).json({
