@@ -121,7 +121,7 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
     const refreshToken = await signRefreshToken(user._id);
 
     // store refresh token on the users browser and in the db
-    res.cookie("refreshtkn", refreshToken, {
+    res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: true,
       maxAge: 96 * 60 * 60 * 1000,
@@ -282,7 +282,7 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
     // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
-    const refresh_token = req.cookies.refreshtkn;
+    const { refresh_token } = req.cookies;
 
     //fetch userId attached to request object from authMiddleware
 
