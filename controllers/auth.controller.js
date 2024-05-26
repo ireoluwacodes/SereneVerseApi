@@ -128,13 +128,23 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
       sameSite: "none",
     });
 
-    await User.findByIdAndUpdate(user._id, { refreshToken }, { new: true });
+    const myUser = await User.findByIdAndUpdate(
+      user._id,
+      { refreshToken },
+      { new: true }
+    ).lean();
+
+    const sanitizedUser = {
+      ...myUser,
+      refreshToken: undefined,
+      _v: undefined,
+    };
 
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       token: accessToken,
-      data: user,
+      data: sanitizedUser,
     });
   } catch (error) {
     next(error);
@@ -144,7 +154,7 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
 const verifyConsultant = AsyncHandler(async (req, res, next) => {
   try {
     const token = req.params.token;
-    
+
     if (!token) throw new ForbiddenRequestError("Invalid Parameters");
 
     const id = await verifyToken(token);
