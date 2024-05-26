@@ -44,4 +44,13 @@ passport.use(
   )
 );
 
+passport.serializeUser((user, done) => {
+  done(null, { id: user._id }); // Store user ID in session
+});
+
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
+});
+
 module.exports = passport;

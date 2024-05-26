@@ -14,6 +14,7 @@ const {
   deleteConsultant,
   getAllPatients,
   getUsersContacted,
+  resendConsultantMail,
 } = require("../controllers/user.controller");
 const validator = require("../middlewares/validator.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -41,6 +42,10 @@ userRouter
   );
 
 userRouter
+  .route("/admin/create-expert/:id")
+  .get(authMiddleware, isAdmin, resendConsultantMail);
+
+userRouter
   .route("/admin/delete-expert/:id")
   .delete(authMiddleware, isAdmin, deleteConsultant);
 
@@ -60,7 +65,9 @@ userRouter
 
 userRouter.route("/contact-history").get(authMiddleware, getContactHistory);
 
-userRouter.route("/expert/users-contacted").get(authMiddleware, isConsultant, getUsersContacted);
+userRouter
+  .route("/expert/users-contacted")
+  .get(authMiddleware, isConsultant, getUsersContacted);
 
 userRouter
   .route("/add-expert-contact/:id")

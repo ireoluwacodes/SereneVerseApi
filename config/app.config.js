@@ -44,7 +44,7 @@ app.use(
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: selectDb(),
-      ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+      ttl: 4 * 24 * 60 * 60, // = 4 days.
     }),
   })
 );

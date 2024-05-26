@@ -130,6 +130,39 @@ const createConsultant = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const resendConsultantMail = AsyncHandler(async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const findUser = await User.findById(id);
+
+    if (!findUser) {
+      throw new ForbiddenRequestError("User not found");
+    }
+
+    const subject = "New Consultant At SereneVerse";
+    const template = "createConsultant";
+    const token = await signToken(findUser._id);
+    const link = `https://serene-verse.vercel.app/redirect-expert/${token}`;
+    // sendConsultantMail
+    response = await sendConsultantMail(
+      email,
+      subject,
+      template,
+      link,
+      fullName
+    );
+
+    return res.status(status.CREATED).json({
+      status: "success",
+      statusCode: status.CREATED,
+      data: findUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 const deleteConsultant = AsyncHandler(async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -291,7 +324,7 @@ const addExpertContact = AsyncHandler(async (req, res, next) => {
 const getExpertContact = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
-    const expertArr = await User.find({ role: 2, status: "complete" });
+    const expertArr = await User.find({ role: 2 });
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
@@ -371,6 +404,7 @@ module.exports = {
   createAdmin,
   createConsultant,
   upload,
+  resendConsultantMail,
   deleteConsultant,
   uploadProfileImage,
 };

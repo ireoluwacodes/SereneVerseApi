@@ -118,33 +118,34 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
     const user = req.user;
     // sign access and refresh token to keep a user logged in
     const accessToken = await signToken(user._id);
-    const refreshToken = await signRefreshToken(user._id);
+
+    // const refreshToken = await signRefreshToken(user._id);
 
     // store refresh token on the users browser and in the db
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 96 * 60 * 60 * 1000,
-      sameSite: "none",
-    });
+    // res.cookie("refresh_token", refreshToken, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   maxAge: 96 * 60 * 60 * 1000,
+    //   sameSite: "none",
+    // });
 
-    const myUser = await User.findByIdAndUpdate(
-      user._id,
-      { refreshToken },
-      { new: true }
-    ).lean();
+    // const myUser = await User.findByIdAndUpdate(
+    //   user._id,
+    //   { refreshToken },
+    //   { new: true }
+    // ).lean();
 
-    const sanitizedUser = {
-      ...myUser,
-      refreshToken: undefined,
-      _v: undefined,
-    };
+    // const sanitizedUser = {
+    //   ...myUser,
+    //   refreshToken: undefined,
+    //   _v: undefined,
+    // };
 
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       token: accessToken,
-      data: sanitizedUser,
+      data: user,
     });
   } catch (error) {
     next(error);
@@ -281,6 +282,16 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 // controller to refresh the logged in user and renew access token
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
+    if(req.user){
+      const user = req.user;
+      const accessToken = await signToken(user._id);
+      return res.status(status.OK).json({
+        status: "success",
+        statusCode: status.OK,
+        data : user,
+        token: accessToken,
+      });
+    }
     // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
     const { refresh_token } = req.cookies;
 
@@ -314,22 +325,17 @@ const refresh = AsyncHandler(async (req, res, next) => {
 // controller to log out a user session
 const logOut = AsyncHandler(async (req, res, next) => {
   try {
-    const refresh_token = req.cookies.refresh_token;
-
+    const { refresh_token } = req.cookies;
     const userId = req.userId;
 
+    if(req.isAuthenticated()){
+      req.logout()
+      req.session.destroy()
+      res.clearCookie("connect.sid", {path: "/"})
+      return res.sendStatus(status.NO_CONTENT);
+    }
+
     const user = await User.findById(userId);
-
-    // if (!user || !refresh_token || user.refreshToken != refresh_token) {
-    //   // clears cookie from user browser and logs user out
-    //   res.clearCookie("refresh_token", {
-    //     httpOnly: true,
-    //     secure: true,
-    //   });
-
-    //   user.refreshToken = undefined;
-    //   await user.save();
-    // }
 
     res.clearCookie("refresh_token", {
       httpOnly: true,
