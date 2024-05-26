@@ -31,15 +31,15 @@ authRouter
 
 authRouter
   .route("/google/callback")
-  .get(passport.authenticate("google", { session : true }), handleGoogleAuth);
+  .get(passport.authenticate("google", { session: true }), handleGoogleAuth);
 
-authRouter.route("/verify-expert/:token").get(verifyConsultant)
+authRouter.route("/verify-expert/:token").get(verifyConsultant);
 
 authRouter
   .route("/password/forgot")
   .post(validator(checkEmailSchema), forgotPassword);
 
-authRouter.route("/refresh").get(refresh);
+authRouter.route("/refresh").get(passport.authenticate("session"), refresh);
 
 authRouter
   .route("/password/reset")
