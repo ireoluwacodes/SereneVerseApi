@@ -282,7 +282,7 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
     // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
-    const { refresh_token } = req.cookies;
+    const refresh_token = req.cookies.refreshtkn;
 
     //fetch userId attached to request object from authMiddleware
 
