@@ -15,6 +15,7 @@ module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
     const streak = await Streak.create({
       userId,
       name,
+      currentStreak : 1,
       currentStreakStarted: new Date(Date.now()),
     });
 
@@ -92,7 +93,7 @@ module.exports.restartExistingStreak = AsyncHandler(async (req, res, next) => {
 
     const streak = await Streak.findByIdAndUpdate(
       id,
-      { status: "active" },
+      { status: "active", currentStreak : 1},
       { new: true }
     );
 
