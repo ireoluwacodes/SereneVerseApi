@@ -116,9 +116,7 @@ const login = AsyncHandler(async (req, res, next) => {
 const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   try {
     const user = req.user;
-    console.log(user)
     req.session.userId = user._id;
-    console.log(req.session)
     req.session.save((err) => {
       if (err) {
         console.log(err);
@@ -290,6 +288,7 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 // controller to refresh the logged in user and renew access token
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
+    console.log(req.session)
     if (req.session.userId) {
       const user = await User.findById(req.session.userId);
 
