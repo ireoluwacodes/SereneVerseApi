@@ -6,5 +6,5 @@ module.exports.createChatSchema = Joi.object({
   message: Joi.string().required(),
   date: Joi.string().required(),
   sentAt: Joi.string().required(),
-  senderProfile: Joi.string().required(),
+  senderProfile: Joi.string(),
 });
