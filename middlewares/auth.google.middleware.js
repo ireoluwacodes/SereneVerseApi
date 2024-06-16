@@ -6,6 +6,7 @@ const {
   googleClientRedirect,
 } = require("../config/constants.config");
 const ForbiddenRequestError = require("../exceptions/forbidden.exception");
+const BadRequestError = require("../exceptions/badRequest.exception");
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
@@ -31,7 +32,7 @@ passport.use(
           });
         } else {
           if (user.loginScheme !== "google")
-            throw new Error(
+            throw new BadRequestError(
               `Invalid login scheme - login with ${user.loginScheme}`
             );
         }
