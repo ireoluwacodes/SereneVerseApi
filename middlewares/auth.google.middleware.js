@@ -32,7 +32,7 @@ passport.use(
           });
         } else {
           if (user.loginScheme !== "google")
-            throw new BadRequestError(
+            throw new Error(
               `Invalid login scheme - login with ${user.loginScheme}`
             );
         }
