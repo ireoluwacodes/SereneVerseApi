@@ -5,6 +5,7 @@ const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { validateDbId } = require("../utils/mongoId.utils");
 const { Streak } = require("../models/streaks.model");
 const { User } = require("../models/user.model");
+const BadRequestError = require("../exceptions/badRequest.exception");
 
 module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
   try {
@@ -15,7 +16,7 @@ module.exports.startNewStreak = AsyncHandler(async (req, res, next) => {
     const streak = await Streak.create({
       userId,
       name,
-      currentStreak : 1,
+      currentStreak: 1,
       currentStreakStarted: new Date(Date.now()),
     });
 
@@ -44,13 +45,14 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
     const streak = await Streak.findById(id);
 
     if (
-      new Date(streak.lastUpdated).getTime() + 24 * 60 * 60 * 1000 <=
+      !new Date(streak.lastUpdated).getTime() + 24 * 60 * 60 * 1000 <=
       Date.now()
     ) {
-      streak.currentStreak = streak.currentStreak + 1;
-      streak.lastUpdated = Date.now();
-      await streak.save();
+      throw new BadRequestError("Sorry, It's not been 24 hours yet!");
     }
+    streak.currentStreak = streak.currentStreak + 1;
+    streak.lastUpdated = Date.now();
+    await streak.save();
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
@@ -93,7 +95,7 @@ module.exports.restartExistingStreak = AsyncHandler(async (req, res, next) => {
 
     const streak = await Streak.findByIdAndUpdate(
       id,
-      { status: "active", currentStreak : 1},
+      { status: "active", currentStreak: 1 },
       { new: true }
     );
 
