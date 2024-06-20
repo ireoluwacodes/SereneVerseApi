@@ -45,7 +45,7 @@ module.exports.myStreak = AsyncHandler(async (req, res, next) => {
     const streak = await Streak.findById(id);
 
     if (
-      new Date(streak.lastUpdated).getTime() + 24 * 60 * 60 * 1000 <=
+      new Date(streak.lastUpdated).getTime() + 24 * 60 * 60 * 1000 >
       Date.now()
     ) {
       throw new BadRequestError("Sorry, It's not been 24 hours yet!");
