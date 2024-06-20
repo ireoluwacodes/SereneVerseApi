@@ -5,7 +5,7 @@ const status = require("http-status");
 
 const createChat = AsyncHandler(async (req, res, next) => {
   try {
-    const { senderId, receiverId, message, senderProfile, sentAt, date } =
+    const { senderId, receiverId, message, sentAt, date } =
       req.body;
     await validateDbId(senderId, receiverId);
 
@@ -13,7 +13,6 @@ const createChat = AsyncHandler(async (req, res, next) => {
       senderId,
       receiverId,
       message,
-      senderProfile,
       sentAt,
       date,
     });
