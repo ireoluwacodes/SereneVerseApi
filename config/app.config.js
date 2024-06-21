@@ -46,17 +46,11 @@ app.use(
   session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: fslse,
     store: MongoStore.create({
       mongoUrl: selectDb(),
-      ttl: 4 * 24 * 60 * 60, // = 4 days.
-    }),
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 96,
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    },
+      ttl:  60 * 60, // = 1 hour.
+    })
   })
 );
 
