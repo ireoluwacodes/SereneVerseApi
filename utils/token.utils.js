@@ -7,7 +7,7 @@ const signToken = async (id) => {
       id,
     };
     let token = jwt.sign(payload, secret, {
-      expiresIn: "1h",
+      expiresIn: "4h",
     });
     return token;
   } catch (error) {
@@ -24,19 +24,19 @@ const verifyToken = async (token) => {
   }
 };
 
-const signRefreshToken = async (id) => {
-  try {
-    let payload = {
-      id,
-    };
-    let token = jwt.sign(payload, secret, {
-      expiresIn: "7d",
-    });
-    return token;
-  } catch (error) {
-    throw new jwt.JsonWebTokenError(error);
-  }
-};
+// const signRefreshToken = async (id) => {
+//   try {
+//     let payload = {
+//       id,
+//     };
+//     let token = jwt.sign(payload, secret, {
+//       expiresIn: "7d",
+//     });
+//     return token;
+//   } catch (error) {
+//     throw new jwt.JsonWebTokenError(error);
+//   }
+// };
 
 // const signGoogleToken = async (id) => {
 //   try {
@@ -53,7 +53,7 @@ const signRefreshToken = async (id) => {
 // };
 
 module.exports = {
-  signRefreshToken,
+  // signRefreshToken,
   signToken,
   verifyToken,
 };

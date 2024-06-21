@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userName : {
-      type : String
+    userName: {
+      type: String,
     },
     email: {
       type: String,
@@ -36,8 +36,8 @@ const userSchema = new mongoose.Schema(
       required: true,
       enum: ["email", "google"],
     },
-    status : {
-      type : String,
+    status: {
+      type: String,
       default: "complete",
       enum: ["complete", "pending"],
     },
@@ -47,19 +47,22 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    streaks : [
+    streaks: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Streak",
-      }
+      },
     ],
     role: {
       type: Number,
       required: true,
       enum: [1, 2, 3],
     },
-    refreshToken: {
+    accessToken: {
       type: String,
+    },
+    refreshValidTill: {
+      type: Date,
     },
     isOnline: {
       type: Boolean,

@@ -5,12 +5,8 @@ const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const UnauthorizedRequestError = require("../exceptions/badRequest.exception");
 const { User } = require("../models/user.model");
 const { hashPassword, comparePassword } = require("../utils/hashing.utils");
-const {
-  signToken,
-  signRefreshToken,
-  verifyToken,
-} = require("../utils/token.utils");
-const { sendMail } = require("../utils/mailer.utils");
+const { signToken, verifyToken } = require("../utils/token.utils");
+const { sendMail, sendConsultantMail } = require("../utils/mailer.utils");
 const { generateOtp } = require("../utils/otp.utils");
 
 // controller to register a user
@@ -82,22 +78,23 @@ const login = AsyncHandler(async (req, res, next) => {
     }
     // sign access and refresh token to keep a user logged in
     const accessToken = await signToken(findUser._id);
-    const refreshToken = await signRefreshToken(findUser._id);
 
     // store refresh token on the users browser and in the db
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 96 * 60 * 60 * 1000,
-      sameSite: "none",
-    });
+    // res.cookie("refresh_token", refreshToken, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   maxAge: 96 * 60 * 60 * 1000,
+    //   sameSite: "none",
+    // });
 
-    findUser.refreshToken = refreshToken;
+    findUser.refreshValidTill = Date.now() + 96 * 60 * 60 * 1000;
+    findUser.accessToken = accessToken;
     await findUser.save();
 
     const user = {
       ...findUser._doc,
-      refreshToken: undefined,
+      accessToken: undefined,
+      refreshValidTill: undefined,
       hash: undefined,
       password,
       _v: undefined,
@@ -116,42 +113,28 @@ const login = AsyncHandler(async (req, res, next) => {
 const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   try {
     const user = req.user;
-    req.session.userId = user._id;
-    req.session.save((err) => {
-      if (err) {
-        console.log("err", err);
-      }
-    });
     // sign access and refresh token to keep a user logged in
     const accessToken = await signToken(user._id);
 
-    // const refreshToken = await signRefreshToken(user._id);
+    const myUser = await User.findByIdAndUpdate(
+      user._id,
+      { accessToken, refreshValidTill: Date.now() + 96 * 60 * 60 * 1000 },
+      { new: true }
+    ).lean();
 
-    // store refresh token on the users browser and in the db
-    // res.cookie("refresh_token", refreshToken, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   maxAge: 96 * 60 * 60 * 1000,
-    //   sameSite: "none",
-    // });
-
-    // const myUser = await User.findByIdAndUpdate(
-    //   user._id,
-    //   { refreshToken },
-    //   { new: true }
-    // ).lean();
-
-    // const sanitizedUser = {
-    //   ...myUser,
-    //   refreshToken: undefined,
-    //   _v: undefined,
-    // };
+    const sanitizedUser = {
+      ...myUser,
+      accessToken: undefined,
+      refreshValidTill: undefined,
+      hash: undefined,
+      _v: undefined,
+    };
 
     return res.status(status.OK).json({
       status: "success",
       statusCode: status.OK,
       token: accessToken,
-      data: user,
+      data: sanitizedUser,
     });
   } catch (error) {
     next(error);
@@ -288,48 +271,51 @@ const confirmOtp = AsyncHandler(async (req, res, next) => {
 // controller to refresh the logged in user and renew access token
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
-    console.log(req.session)
-    if (req.session.userId) {
-      const user = await User.findById(req.session.userId);
+    // destructure token from the params
+    const { token } = req.params;
 
-      if (!user)
-        throw new ForbiddenRequestError(
-          "User not Found - invalid refresh token"
-        );
+    const user = await User.findOne({ accessToken: token }).lean();
+    if (!user) {
+      throw new ForbiddenRequestError("invalid token");
+    }
+    if (new Date(user.refreshValidTill).getTime() < Date.now()) {
+      throw new ForbiddenRequestError("refresh token is EXPIRED");
+    }
+    try {
+      const payload = await verifyToken(token);
 
-      const accessToken = await signToken(user._id);
+      const sanitizedUser = {
+        ...user,
+        accessToken: undefined,
+        hash: undefined,
+        refreshValidTill: undefined,
+      };
       return res.status(status.OK).json({
         status: "success",
         statusCode: status.OK,
-        data: user,
-        token: accessToken,
+        data: sanitizedUser,
+        token,
+      });
+    } catch (error) {
+      const token = await signToken(user._id);
+
+      await User.findByIdAndUpdate(user._id, {
+        accessToken: token,
+      });
+      const sanitizedUser = {
+        ...user,
+        accessToken: undefined,
+        hash: undefined,
+        refreshValidTill: undefined,
+      };
+
+      return res.status(status.OK).json({
+        status: "success",
+        statusCode: status.OK,
+        data: sanitizedUser,
+        token,
       });
     }
-    // destructure existing refresh token from the cookies sent to the browser in the log in endpoint
-    const { refresh_token } = req.cookies;
-
-    //fetch userId attached to request object from authMiddleware
-
-    const user = await User.findOne({ refreshToken: refresh_token }).lean();
-
-    if (!user || !refresh_token || user.refreshToken !== refresh_token)
-      throw new ForbiddenRequestError("User not Found - invalid refresh token");
-    // after validating logged in user, pass a new access token
-    const accessToken = await signToken(user._id);
-
-    const sanitizedUser = {
-      ...user,
-      refreshToken: undefined,
-      hash: undefined,
-      _v: undefined,
-    };
-
-    return res.status(status.OK).json({
-      status: "success",
-      statusCode: status.OK,
-      data: sanitizedUser,
-      token: accessToken,
-    });
   } catch (error) {
     next(error);
   }
