@@ -22,9 +22,6 @@ const chatSchema = new Schema(
       type: String,
       default: "00:00",
     },
-    senderProfile: {
-      type: String,
-    },
     status: {
       type: String,
       default: "active",
